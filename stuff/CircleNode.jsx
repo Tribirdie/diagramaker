@@ -8,10 +8,12 @@ function CircleNode({data}){
 	return (
 		<div id="circlenode">
 		<p>
-		{data.label}
+		<input id="input"></input>
 		</p>
 
-		<Handle type='loose' position={Position.Bottom}/>
+		<Handle type='source' position={Position.Bottom}/>
+		<Handle type='target' position={Position.Top} id="top"/>
+
 		</div>
 	)
 }

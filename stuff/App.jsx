@@ -50,69 +50,74 @@ const createNode = (ids, pos,labels, types) =>{
 let clicked = 0;
 let origin_exists = false;
 let pos = {x:50, y:50}
-let Node1 = 0
-let Node2 = 0
-let nodes_clicked = 0
+let edgeDropped = false;
 
 function Inner({setNodes, nodes, onNodesChange, setEdges, edges, onEdgesChange}){
 	const edgeReconnect = useRef(true)
 	const reactFlow = useReactFlow();
 
 	const getPos = (e) => {
-		const screenPos = {x:e.clientX, y:e.clientY};
-		pos = reactFlow.screenToFlowPosition(screenPos)
+		if (!edgeDropped){
+			const screenPos = {x:e.clientX, y:e.clientY};
+			pos = reactFlow.screenToFlowPosition(screenPos)
+		
 
-		if (!origin_exists){
-			const OriginNode = createNode("og", pos, "", "origin")
-			setNodes((nds) => nds.concat(OriginNode))
-			origin_exists = true;
+		        if (!origin_exists){
+				const OriginNode = createNode("og", pos, "", "origin")
+				setNodes((nds) => nds.concat(OriginNode))
+				origin_exists = true;
+			}
+			
+			setNodes((nds) => nds.map((node) =>{
+				if (!(node.id == "og") ){
+					return node
+				}
+
+			        return createNode("og", pos, "", "origin")
+			}))
 		}
 
-		setNodes((nds) => nds.map((node) =>{
-			if (!(node.id == "og") ){
-				return node
-			}
-
-			return createNode("og", pos, "", "origin")
-		}))
-		console.log("hi")
+		edgeDropped = false;
+		console.log(edgeDropped)
 	}
-	const addNode = useCallback((type) => {
+	const addNode = (type) => {
 		const CreatedNode = createNode(Math.random(), pos, Math.random(), type)
 		setNodes((nds) => nds.concat(CreatedNode));
-	}, [setNodes]);
+	}
+
+	const MakeSquare = useCallback(() => {
+		addNode('default')
+	}, []);
+
+	const MakeCircle = useCallback(() => {
+		addNode('circleNode')
+	}, [])
 
 	const onConnect = useCallback((connection) =>{
+		edgeDropped = true;
 		setEdges((eds) => addEdge(connection, eds));
 	}, [setEdges]);
 
 	const onReconnectStart = useCallback(() =>{
+		edgeDropped = true;
 		edgeReconnect.current = false;
+		console.log("obama")
 	}, []);
 	const onReconnect = useCallback((oldEdge, newConnection) =>{
+		edgeDropped = true;
 		edgeReconnect.current = true;
 		setEdges((eds) => reconnectEdge(oldEdge,newConnection,eds)); 
 	}, [setEdges]);
 
 	const onReconnectEnd = useCallback((_, edge) =>{
 		if (!edgeReconnect.current){
-			setEdges((eds) => eds.filter((e) => e.id !== edge.id))	
+			setEdges((eds) => eds.filter((e) => e.id !== edge.id))
+			edgeDropped = true;
+			console.log("ohio")
 		}
+
 	}, [setEdges])
 
-	const onNodeClick = useCallback((event, node) => {
-		console.log("My grandest delusion")
-		if (nodes_clicked == 0){
-			Node1 = node.id;
-		}
-
-		else{
-			Node2 = node.id;
-			nodes_clicked = 0;
-		}
-
-		nodes_clicked += 1
-	}, [])
 
 	return 	(
 		<div style={{ height: '100%', width: '100%' }}>
@@ -124,7 +129,6 @@ function Inner({setNodes, nodes, onNodesChange, setEdges, edges, onEdgesChange})
 		nodeTypes={nodeTypes}
 		onPaneClick={getPos}
 		onConnect={onConnect}
-		onNodeClick={onNodeClick}
 		onReconnect={onReconnect}
 		onReconnectStart={onReconnectStart}
 		onReconnectEnd={onReconnectEnd}
@@ -134,23 +138,11 @@ function Inner({setNodes, nodes, onNodesChange, setEdges, edges, onEdgesChange})
 		<Panel position="top-left">
 		<footer id="bottom-sidebar">
                 <div id="rows">
-                  <button id="bottom-bar-butts" onClick={addNode}>
+                  <button id="bottom-bar-butts" onClick={MakeSquare}>
                   Square
-                  </button>
-                  <button id="bottom-bar-butts" title="Arrow connecting shapes">
-                  Arrow
-                  </button>
-                  <button id="bottom-bar-butts" title="Draws a circle at the origin"
+                  </button> 
+                  <button id="bottom-bar-butts" onClick={MakeCircle} title="Draws a circle at the origin"
                      >Circle
-                  </button>
-                  <button id="bottom-bar-butts" title="Arrow that can be bent"
-                     >PolyArrow
-                  </button>
-                  <button id="bottom-bar-butts" onClick={addNode}title="Sets shape drawing point">
-                  Origin
-                  </button>
-                  <button id="bottom-bar-butts" title="Adds text">
-                  Text
                   </button>
                 </div>
 		</footer>
@@ -171,7 +163,6 @@ export default function App() {
 	const edgeReconnect = useRef(true)
 	const [nodes, setNodes, onNodesChange] = useNodesState(node);
 	const [edges, setEdges, onEdgesChange] = useEdgesState(edge)
-
 
   return (
     <div style={{ height: '100%', width: '100%' }}>
