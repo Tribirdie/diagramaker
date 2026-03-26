@@ -3,8 +3,9 @@ import {React, useCallback, useRef} from 'react'
 import {reconnectEdge, addEdge, Position, ReactFlow, MarkerType, useEdgesState, ReactFlowProvider, useReactFlow, applyNodeChanges, useNodesState, Panel, Background, Controls, ControlButton, BackgroundVariant} from '@xyflow/react';
 import '@xyflow/react/dist/style.css';
 import CircleNode from './CircleNode'
+import Origin from './Origin'
 
-const nodeTypes = {circleNode: CircleNode}
+const nodeTypes = {circleNode: CircleNode, origin: Origin}
 
 let node = [{
 	id: 'hi',
@@ -35,17 +36,19 @@ const edge = [{
 	edgesReconnectable: true
 
 }]
-const createNode = (ids, pos,labels) =>{
+const createNode = (ids, pos,labels, types) =>{
 	const newnode = {
 		id: ids.toString(),
 		position: pos,
 		data: {label:labels},
+		type: types
 	}
 
 	return newnode
 }
 
 let clicked = 0;
+let origin_exists = false;
 let pos = {x:50, y:50}
 let Node1 = 0
 let Node2 = 0
@@ -58,11 +61,24 @@ function Inner({setNodes, nodes, onNodesChange, setEdges, edges, onEdgesChange})
 	const getPos = (e) => {
 		const screenPos = {x:e.clientX, y:e.clientY};
 		pos = reactFlow.screenToFlowPosition(screenPos)
-		console.log(pos)
-	}
 
+		if (!origin_exists){
+			const OriginNode = createNode("og", pos, "", "origin")
+			setNodes((nds) => nds.concat(OriginNode))
+			origin_exists = true;
+		}
+
+		setNodes((nds) => nds.map((node) =>{
+			if (!(node.id == "og") ){
+				return node
+			}
+
+			return createNode("og", pos, "", "origin")
+		}))
+		console.log("hi")
+	}
 	const addNode = useCallback((type) => {
-		const CreatedNode = createNode(Math.random(), pos, Math.random())
+		const CreatedNode = createNode(Math.random(), pos, Math.random(), type)
 		setNodes((nds) => nds.concat(CreatedNode));
 	}, [setNodes]);
 
@@ -130,7 +146,7 @@ function Inner({setNodes, nodes, onNodesChange, setEdges, edges, onEdgesChange})
                   <button id="bottom-bar-butts" title="Arrow that can be bent"
                      >PolyArrow
                   </button>
-                  <button id="bottom-bar-butts" title="Sets shape drawing point">
+                  <button id="bottom-bar-butts" onClick={addNode}title="Sets shape drawing point">
                   Origin
                   </button>
                   <button id="bottom-bar-butts" title="Adds text">
