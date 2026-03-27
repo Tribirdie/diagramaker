@@ -36,12 +36,13 @@ const edge = [{
 	edgesReconnectable: true
 
 }]
-const createNode = (ids, pos,labels, types) =>{
+const createNode = (ids, pos,labels, types, isDraggable) =>{
 	const newnode = {
 		id: ids.toString(),
 		position: pos,
 		data: {label:labels},
-		type: types
+		type: types,
+		draggable: isDraggable // only false for origin cursor. it should only move on clicking on pane
 	}
 
 	return newnode
@@ -63,7 +64,7 @@ function Inner({setNodes, nodes, onNodesChange, setEdges, edges, onEdgesChange})
 		
 
 		        if (!origin_exists){
-				const OriginNode = createNode("og", pos, "", "origin")
+				const OriginNode = createNode("og", pos, "", "origin", false)
 				setNodes((nds) => nds.concat(OriginNode))
 				origin_exists = true;
 			}
@@ -73,24 +74,23 @@ function Inner({setNodes, nodes, onNodesChange, setEdges, edges, onEdgesChange})
 					return node
 				}
 
-			        return createNode("og", pos, "", "origin")
+			        return createNode("og", pos, "", "origin", false)
 			}))
 		}
 
 		edgeDropped = false;
-		console.log(edgeDropped)
 	}
-	const addNode = (type) => {
-		const CreatedNode = createNode(Math.random(), pos, Math.random(), type)
+	const addNode = (type, isDraggable) => {
+		const CreatedNode = createNode(Math.random(), pos, Math.random(), type, isDraggable)
 		setNodes((nds) => nds.concat(CreatedNode));
 	}
 
 	const MakeSquare = useCallback(() => {
-		addNode('default')
+		addNode('default', true)
 	}, []);
 
 	const MakeCircle = useCallback(() => {
-		addNode('circleNode')
+		addNode('circleNode', true)
 	}, [])
 
 	const onConnect = useCallback((connection) =>{
@@ -113,7 +113,6 @@ function Inner({setNodes, nodes, onNodesChange, setEdges, edges, onEdgesChange})
 		if (!edgeReconnect.current){
 			setEdges((eds) => eds.filter((e) => e.id !== edge.id))
 			edgeDropped = true;
-			console.log("ohio")
 		}
 
 	}, [setEdges])
