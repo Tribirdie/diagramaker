@@ -4,8 +4,10 @@ import {reconnectEdge, addEdge, Position, ReactFlow, MarkerType, useEdgesState, 
 import '@xyflow/react/dist/style.css';
 import CircleNode from './CircleNode'
 import Origin from './Origin'
+import TextEdge from './TextEdge'
 
 const nodeTypes = {circleNode: CircleNode, origin: Origin}
+const edgeTypes = {textEdge: TextEdge}
 
 let node = [{
 	id: 'hi',
@@ -48,6 +50,16 @@ const createNode = (ids, pos,labels, types, isDraggable) =>{
 	return newnode
 }
 
+const createEdge = (ids, targets, sources) =>{
+	const newEdge = {
+		id: ids.toString(),
+		source: sources,
+		target: targets,
+		type: 'textEdge'
+	}
+
+	return newEdge
+}
 let clicked = 0;
 let origin_exists = false;
 let pos = {x:50, y:50}
@@ -94,8 +106,9 @@ function Inner({setNodes, nodes, onNodesChange, setEdges, edges, onEdgesChange})
 	}, [])
 
 	const onConnect = useCallback((connection) =>{
+		const CreatedEdge = createEdge(Math.random(), connection.target, connection.source)
 		edgeDropped = true;
-		setEdges((eds) => addEdge(connection, eds));
+		setEdges((eds) => addEdge(CreatedEdge, eds));
 	}, [setEdges]);
 
 	const onReconnectStart = useCallback(() =>{
@@ -126,6 +139,7 @@ function Inner({setNodes, nodes, onNodesChange, setEdges, edges, onEdgesChange})
 		onEdgesChange={onEdgesChange} 
 		onNodesChange={onNodesChange} 
 		nodeTypes={nodeTypes}
+		edgeTypes={edgeTypes}
 		onPaneClick={getPos}
 		onConnect={onConnect}
 		onReconnect={onReconnect}
