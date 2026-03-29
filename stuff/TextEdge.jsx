@@ -16,9 +16,11 @@ const TextEdge = ({
   const [edgePath, labelX, labelY] = getBezierPath({
     sourceX,
     sourceY,
+    sourcePosition, 
     sourcePosition,
     targetX,
     targetY,
+    targetPosition,
     targetPosition,
   });
 
@@ -30,9 +32,7 @@ const TextEdge = ({
           style={{
             position: 'absolute',
             transform: `translate(-50%, -50%) translate(${labelX}px,${labelY}px)`,
-            background: '#ffcc00',
             borderRadius: 5,
-            fontSize: 12,
             fontWeight: 700,
 	    pointerEvents: 'all',
           }} 
@@ -40,7 +40,7 @@ const TextEdge = ({
 	  className="nodrag nopan"
 
         >
-          <input id="input"></input>
+          <textarea id="textarea"></textarea>
         </div>
       </EdgeLabelRenderer>
     </>

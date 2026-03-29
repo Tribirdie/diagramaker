@@ -1,60 +1,42 @@
 
 import {React, useCallback, useRef} from 'react'
-import {reconnectEdge, addEdge, Position, ReactFlow, MarkerType, useEdgesState, ReactFlowProvider, useReactFlow, applyNodeChanges, useNodesState, Panel, Background, Controls, ControlButton, BackgroundVariant} from '@xyflow/react';
+import {reconnectEdge, addEdge, useEdgesState,
+	Position, ReactFlow, MarkerType, ReactFlowProvider, useReactFlow,
+	applyNodeChanges, useNodesState, 
+	Panel, Background, Controls, ControlButton, BackgroundVariant,
+	ConnectionMode} from '@xyflow/react';
 import '@xyflow/react/dist/style.css';
 import CircleNode from './CircleNode'
 import Origin from './Origin'
+import RectangularNode from './RectangularNode'
 import TextEdge from './TextEdge'
 
-const nodeTypes = {circleNode: CircleNode, origin: Origin}
+const nodeTypes = {circleNode: CircleNode, origin: Origin, RectNode: RectangularNode}
 const edgeTypes = {textEdge: TextEdge}
 
-let node = [{
-	id: 'hi',
-	position: {x:0, y:0},
-	data: {label: "test"},
-	draggable: true,
 
-   },
+let node = [{}];
+const edge = [{}]
 
-   {
-	   id:"p",
-	   position: {x:10, y:10},
-	   data: {label: "test2"},
-
-   },
-
-   {
-	   id:"ha",
-	   position: {x:50, y:50},
-	   data: {label: "test3"}
-   }
-];
-
-const edge = [{
-	id: "mom",
-	source: "hi",
-	target: "p",
-	edgesReconnectable: true
-
-}]
 const createNode = (ids, pos,labels, types, isDraggable) =>{
 	const newnode = {
 		id: ids.toString(),
 		position: pos,
 		data: {label:labels},
 		type: types,
-		draggable: isDraggable // only false for origin cursor. it should only move on clicking on pane
-	}
+		// only false for origin cursor. it should only move on click on pane, includes connecting edges.
+		draggable: isDraggable 	}
 
 	return newnode
 }
 
-const createEdge = (ids, targets, sources) =>{
+const createEdge = (ids, targets, sources, tHandle, sHandle) =>{
 	const newEdge = {
 		id: ids.toString(),
 		source: sources,
 		target: targets,
+		targetHandle: tHandle,
+		sourceHandle: sHandle,
 		type: 'textEdge'
 	}
 
@@ -64,6 +46,8 @@ let clicked = 0;
 let origin_exists = false;
 let pos = {x:50, y:50}
 let edgeDropped = false;
+let target = 'left';
+let source = 'right'
 
 function Inner({setNodes, nodes, onNodesChange, setEdges, edges, onEdgesChange}){
 	const edgeReconnect = useRef(true)
@@ -98,23 +82,49 @@ function Inner({setNodes, nodes, onNodesChange, setEdges, edges, onEdgesChange})
 	}
 
 	const MakeSquare = useCallback(() => {
-		addNode('default', true)
+		addNode('RectNode', true)
 	}, []);
 
 	const MakeCircle = useCallback(() => {
 		addNode('circleNode', true)
 	}, [])
 
+	const onConnectStart = useCallback((_, {handleId}) =>{
+
+		if (handleId == "bottom"){
+			source = handleId
+			target = "top"
+		}
+
+		if (handleId == "top"){
+			source = "bottom"
+			target = handleId
+		}
+
+		if (handleId == "right"){
+			source = handleId
+			target = "left"
+		}
+
+		if (handleId == "left"){
+			source = "right"
+			target = handleId
+		}
+	})
+
 	const onConnect = useCallback((connection) =>{
-		const CreatedEdge = createEdge(Math.random(), connection.target, connection.source)
+		const CreatedEdge = createEdge(Math.random(), connection.target, connection.source, target, source)
 		edgeDropped = true;
 		setEdges((eds) => addEdge(CreatedEdge, eds));
 	}, [setEdges]);
 
+	const onConnectEnd = useCallback(() =>{
+		edgeDropped = true;
+	}, []);
+
 	const onReconnectStart = useCallback(() =>{
 		edgeDropped = true;
 		edgeReconnect.current = false;
-		console.log("obama")
 	}, []);
 	const onReconnect = useCallback((oldEdge, newConnection) =>{
 		edgeDropped = true;
@@ -136,12 +146,15 @@ function Inner({setNodes, nodes, onNodesChange, setEdges, edges, onEdgesChange})
 		<ReactFlow nodes={nodes} 
 		edges={edges}
 
+		connectionMode={ConnectionMode.loose}
 		onEdgesChange={onEdgesChange} 
 		onNodesChange={onNodesChange} 
 		nodeTypes={nodeTypes}
 		edgeTypes={edgeTypes}
 		onPaneClick={getPos}
+		onConnectStart={onConnectStart}
 		onConnect={onConnect}
+		onConnectEnd={onConnectEnd}
 		onReconnect={onReconnect}
 		onReconnectStart={onReconnectStart}
 		onReconnectEnd={onReconnectEnd}
