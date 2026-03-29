@@ -133,6 +133,23 @@
 	top: -50%;
 	left: 22%;
 }
+
 #input{
+	width: 100px;
+}
+
+#textarea{
 	width: 50px;
+}
+#rectangle{
+	position: relative;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	outline: 1px solid black;
+	width: 150px;
+	height: 30px;
+	border-radius: 5px;
+	background-color: white;
+
 }
