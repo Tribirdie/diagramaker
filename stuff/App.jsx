@@ -15,8 +15,8 @@ const nodeTypes = {circleNode: CircleNode, origin: Origin, RectNode: Rectangular
 const edgeTypes = {textEdge: TextEdge}
 
 
-let node = [{}];
-const edge = [{}]
+let node = [];
+const edge = []
 
 const createNode = (ids, pos,labels, types, isDraggable) =>{
 	const newnode = {
