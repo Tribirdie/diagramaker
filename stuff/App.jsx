@@ -185,10 +185,10 @@ function Inner({setNodes, nodes, onNodesChange, setEdges, edges, onEdgesChange})
 		const viewport = getViewportForBounds(nodesBounds, 1366, 768, 0.5, 2);
 
 		toPng(getApp, {
-			width: 1024,
-			height: 768,
+			width: 1366,
+			height: 1366,
 			style: {
-				width: 1024,
+				width: 1366,
 				height: 768,
 			},
 		}
