@@ -1,10 +1,14 @@
 #header{
+	position: absolute;
 	background-color: #262c36;
-	width: auto;
+	margin-bottom: 20px;
+	width: 98vw;
 	height: auto;
+	border-radius: 5px 5px 1px 1px;
 }
 
 #header-button{
+	position: relative;
 	background-color: #262c36;
 	color: white;
 	margin-bottom: 8px;
@@ -17,6 +21,33 @@
 	background-color:#304b6b;
 }
 
+#import-button{
+	position: relative;
+	background-color: #262c36;
+	color: white;
+	margin-bottom: 8px;
+	margin-left: 20px;
+	border-radius: 5px;
+	border: none;
+}
+
+#import-button:hover{
+	background-color:#304b6b;
+}
+
+#export-button{
+	position: relative;
+	background-color: #262c36;
+	color: white;
+	margin-bottom: 8px;
+	margin-left: 20px;
+	border-radius: 5px;
+	border: none;
+}
+
+#export-button:hover{
+	background-color:#304b6b;
+}
 #file-dialog{
 	display: none;
 }
@@ -152,4 +183,53 @@
 	border-radius: 5px;
 	background-color: white;
 
+}
+
+#divs{
+	display: inline-block;
+	margin-top: 26px;
+	margin-left: 12px;
+}
+
+#div-contain{
+	pointer-events: none;
+	display: inline-block;
+	margin-top: 30px;
+	margin-left: 12px;
+	width: 60px;
+	height: 50px; 
+	background-color: blue;
+}
+
+#export-bar{
+	border: none;
+	width: 60px;
+}
+
+/* Container needed to position the dropdown content */
+.dropdown {
+  position: relative;
+  display: inline-block;
+}
+
+.dropdown-content {
+  display: none;
+  position: absolute;
+  min-width: 80px;
+  box-shadow: 0px 2px 4px 0px rgba(0,0,0,0.2);
+}
+
+.dropdown-content button {
+  background-color: #262c36;
+  color: white;
+  padding: 5px 16px;
+  font-size: 10px;
+  text-decoration: none;
+  border: none;
+  display: block;
+  border-radius: 0px 0px 1px 1px;
+}
+
+.dropdown-content button:hover {
+background-color: #304b6b;
 }

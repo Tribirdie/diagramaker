@@ -1,10 +1,10 @@
-
+import {toPng} from 'html-to-image'
 import {React, useCallback, useRef} from 'react'
 import {reconnectEdge, addEdge, useEdgesState,
 	Position, ReactFlow, MarkerType, ReactFlowProvider, useReactFlow,
 	applyNodeChanges, useNodesState, 
 	Panel, Background, Controls, ControlButton, BackgroundVariant,
-	ConnectionMode} from '@xyflow/react';
+	ConnectionMode, getNodesBounds, getViewportForBounds} from '@xyflow/react';
 import '@xyflow/react/dist/style.css';
 import CircleNode from './CircleNode'
 import Origin from './Origin'
@@ -14,9 +14,8 @@ import TextEdge from './TextEdge'
 const nodeTypes = {circleNode: CircleNode, origin: Origin, RectNode: RectangularNode}
 const edgeTypes = {textEdge: TextEdge}
 
-
 let node = [];
-const edge = []
+const edge = [];
 
 const createNode = (ids, pos,labels, types, isDraggable) =>{
 	const newnode = {
@@ -42,12 +41,19 @@ const createEdge = (ids, targets, sources, tHandle, sHandle) =>{
 
 	return newEdge
 }
+
 let clicked = 0;
 let origin_exists = false;
 let pos = {x:50, y:50}
 let edgeDropped = false;
 let target = 'left';
 let source = 'right'
+let header_butt_count = 0;
+let export_butt_count = 0;
+let import_butt_count = 0;
+let run = true;
+let img_run = true;
+let count = 1;
 
 function Inner({setNodes, nodes, onNodesChange, setEdges, edges, onEdgesChange}){
 	const edgeReconnect = useRef(true)
@@ -102,13 +108,13 @@ function Inner({setNodes, nodes, onNodesChange, setEdges, edges, onEdgesChange})
 		}
 
 		if (handleId == "right"){
-			source = handleId
-			target = "left"
+			source = handleId;
+			target = "left";
 		}
 
 		if (handleId == "left"){
-			source = "right"
-			target = handleId
+			source = "right";
+			target = handleId;
 		}
 	})
 
@@ -140,6 +146,101 @@ function Inner({setNodes, nodes, onNodesChange, setEdges, edges, onEdgesChange})
 
 	}, [setEdges])
 
+	const FileDialog = () => {
+
+		const read = new FileReader()
+		read.onload = (e) => {
+			const str_to_obj = JSON.parse(e.target.result)
+			setNodes([])
+			setEdges([])
+			setNodes((nds) => nds.concat(str_to_obj.nodes))
+			setEdges((eds) => eds.concat(str_to_obj.edges))
+			run = true;
+			count += 1
+		};
+
+		const file = document.getElementById("file-dialog")
+
+		// don't open file dialog if clicked for second time. that's when the nodes load.
+		if (run && count != 2){
+			file.click();
+			count = 1;
+		}
+ 
+		const ImportedNodes = file.files[0];
+
+		try{
+			const p = read.readAsText(ImportedNodes);
+		}
+
+		catch (e){
+			run = false;
+		}
+
+	}
+
+	const ExportImage = () =>{
+		const getApp = document.querySelector('.react-flow__viewport')
+		const nodesBounds = reactFlow.getNodesBounds(node)
+		const viewport = getViewportForBounds(nodesBounds, 1366, 768, 0.5, 2);
+
+		toPng(getApp, {
+			width: 1024,
+			height: 768,
+			style: {
+				width: 1024,
+				height: 768,
+			},
+		}
+		).then( (url) => {
+			const dwn = document.createElement('a');
+			dwn.href = url
+			dwn.download = url.split('/').pop();
+			document.body.appendChild(dwn);
+			dwn.click()
+			document.body.removeChild(dwn);
+		})
+	}
+	const ExportJson = () =>{
+		const json = reactFlow.toObject();
+		const json_string = JSON.stringify(json);
+
+		const str_to_blob = new Blob([json_string], {type: "application/json"});
+		const url = URL.createObjectURL(str_to_blob);
+
+		const dwn = document.createElement('a');
+		dwn.href = url;
+		dwn.download = url.split('/').pop();
+		document.body.appendChild(dwn);
+		dwn.click();
+		document.body.removeChild(dwn);
+	}
+
+	const buttClickImport = () => {
+		const element = document.getElementsByClassName('dropdown-content');
+
+		if (!header_butt_count == 1){
+			document.getElementsByClassName("dropdown-content")[0].style.display = "block";
+			header_butt_count += 1;
+			return;
+		}
+
+		document.getElementsByClassName("dropdown-content")[0].style.display = "none";
+		header_butt_count = 0;
+	}
+
+	const buttClickExport = () => {
+		const element = document.getElementsByClassName('dropdown-content');
+
+		if (!export_butt_count == 1){
+			document.getElementsByClassName("dropdown-content")[1].style.display = "block";
+			export_butt_count += 1;
+			return;
+		}
+
+		document.getElementsByClassName("dropdown-content")[1].style.display = "none";
+		export_butt_count = 0;
+	}
 
 	return 	(
 		<div style={{ height: '100%', width: '100%' }}>
@@ -158,8 +259,30 @@ function Inner({setNodes, nodes, onNodesChange, setEdges, edges, onEdgesChange})
 		onReconnect={onReconnect}
 		onReconnectStart={onReconnectStart}
 		onReconnectEnd={onReconnectEnd}
-
 		>
+
+		<Panel>
+		<header id="header">
+		<input type="file" accept=".json" id="file-dialog"></input>
+		
+		<div class="dropdown">
+		<button id="import-button" onClick={buttClickImport}> Import</button>
+		<div class="dropdown-content">
+		<button onClick={FileDialog}>Import Diagram</button>
+		</div>
+		</div>
+
+		<div class="dropdown">
+		<button id="export-button" onClick={buttClickExport}>Export</button>
+		<div class="dropdown-content">
+		<button onClick={ExportJson}>Export as JSON</button>
+		<button onClick={ExportImage}>Export as image</button>
+		</div>
+		</div>
+
+		<button id="header-button">Help</button>
+		</header>
+		</Panel>
 
 		<Panel position="top-left">
 		<footer id="bottom-sidebar">
@@ -175,11 +298,10 @@ function Inner({setNodes, nodes, onNodesChange, setEdges, edges, onEdgesChange})
 		</Panel>
 
 		<Background variant={BackgroundVariant.Lines}/>
+
 		<Controls>
-		<ControlButton onClick={() => alert('Something magical just happened. ✨')}>
-		hi
-		</ControlButton>
 		</Controls>
+
 		</ReactFlow>
 		</div>
  	)
