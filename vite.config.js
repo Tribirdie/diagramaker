@@ -4,6 +4,6 @@ export default defineConfig({
   base: "/diagramaker/",
   root: 'stuff',
   build: {
-    outDir: '../diagramaker',
+    outDir: '../dist',
   }
 })
