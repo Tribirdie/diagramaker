@@ -54,6 +54,8 @@ let import_butt_count = 0;
 let run = true;
 let img_run = true;
 let count = 1;
+let nodes_butt_count = 0;
+const hola = "Exportar como diagrama";
 
 function Inner({setNodes, nodes, onNodesChange, setEdges, edges, onEdgesChange}){
 	const edgeReconnect = useRef(true)
@@ -242,6 +244,19 @@ function Inner({setNodes, nodes, onNodesChange, setEdges, edges, onEdgesChange})
 		export_butt_count = 0;
 	}
 
+	const showNodesList = () =>{
+		if (nodes_butt_count == 0){
+			const elm = document.querySelector(".react-flow__panel")
+			elm.style.removeProperty('z-index'); 
+			document.getElementById("nodes-list").style.display = "flex";
+			nodes_butt_count += 1;
+		}
+
+		else{
+			document.getElementById("nodes-list").style.display = "none";
+			nodes_butt_count = 0;
+		}
+	}
 	return 	(
 		<div style={{ height: '100%', width: '100%' }}>
 		<ReactFlow nodes={nodes} 
@@ -261,7 +276,7 @@ function Inner({setNodes, nodes, onNodesChange, setEdges, edges, onEdgesChange})
 		onReconnectEnd={onReconnectEnd}
 		>
 
-		<Panel>
+		<Panel position="top-left">
 		<header id="header">
 		<input type="file" accept=".json" id="file-dialog"></input>
 		
@@ -275,7 +290,7 @@ function Inner({setNodes, nodes, onNodesChange, setEdges, edges, onEdgesChange})
 		<div class="dropdown">
 		<button id="export-button" onClick={buttClickExport}>Export</button>
 		<div class="dropdown-content">
-		<button onClick={ExportJson}>Export as JSON</button>
+		<button onClick={ExportJson}>{hola}</button>
 		<button onClick={ExportImage}>Export as image</button>
 		</div>
 		</div>
@@ -284,8 +299,9 @@ function Inner({setNodes, nodes, onNodesChange, setEdges, edges, onEdgesChange})
 		</header>
 		</Panel>
 
-		<Panel position="top-left">
-		<footer id="bottom-sidebar">
+		<Panel position="bottom-left">
+
+		<div id="nodes-list">
                 <div id="rows">
                   <button id="bottom-bar-butts" onClick={MakeSquare}>
                   Square
@@ -294,13 +310,18 @@ function Inner({setNodes, nodes, onNodesChange, setEdges, edges, onEdgesChange})
                      >Circle
                   </button>
                 </div>
-		</footer>
+		
+		</div>
+
+
+		<div id="nodes">
+		<button id="butt" onClick={showNodesList}>Nodes</button>
+		</div>
+
 		</Panel>
 
 		<Background variant={BackgroundVariant.Lines}/>
 
-		<Controls>
-		</Controls>
 
 		</ReactFlow>
 		</div>
