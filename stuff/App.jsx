@@ -11,6 +11,7 @@ import Origin from './Origin'
 import RectangularNode from './RectangularNode'
 import TextEdge from './TextEdge'
 import {DropdownButton, ImportButton, ExportButton} from './TopButtons'
+import {Recipes, NodeOven} from './Nodes'
 
 const nodeTypes = {circleNode: CircleNode, origin: Origin, RectNode: RectangularNode}
 const edgeTypes = {textEdge: TextEdge}
@@ -65,6 +66,9 @@ function Inner({setNodes, nodes, onNodesChange, setEdges, edges, onEdgesChange})
 	const ImportButt = new ImportButton(DropButton, true, 1);
 	const ExportButt = new ExportButton(DropButton, reactFlow, node);
 
+	const Recipe = new Recipes(); 
+	const Oven = new NodeOven(Recipe);
+
 	const getPos = (e) => {
 		if (!edgeDropped){
 			const screenPos = {x:e.clientX, y:e.clientY};
@@ -88,17 +92,15 @@ function Inner({setNodes, nodes, onNodesChange, setEdges, edges, onEdgesChange})
 
 		edgeDropped = false;
 	}
-	const addNode = (type, isDraggable) => {
-		const CreatedNode = createNode(Math.random(), pos, Math.random(), type, isDraggable)
-		setNodes((nds) => nds.concat(CreatedNode));
-	}
 
 	const MakeSquare = useCallback(() => {
-		addNode('RectNode', true)
+		const props = [Math.random(), pos, "", "RectNode", true]
+		Oven.render("node", props, {setNodes, nodes})
 	}, []);
 
 	const MakeCircle = useCallback(() => {
-		addNode('circleNode', true)
+		const props = [Math.random(), pos, "", "circleNode", true]
+		Oven. render("node", props, {setNodes, nodes})
 	}, [])
 
 	const onConnectStart = useCallback((_, {handleId}) =>{
