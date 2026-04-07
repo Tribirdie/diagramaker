@@ -3,20 +3,29 @@ import {getNodesBounds, getViewportForBounds} from '@xyflow/react'
 
 class DropdownButton{
 	constructor(){
-		this.times_clicked = 0;
+		this.times_clicked = [0,0,0];
 	}
 
 	showDropdown(cssClassNum){
-		const element = document.getElementsByClassName('dropdown-content');
-
-		if (!this.times_clicked == 1){
+		if (!this.times_clicked[cssClassNum] == 1){
 			document.getElementsByClassName("dropdown-content")[cssClassNum].style.display = "block";
-			this.times_clicked += 1;
+			this.times_clicked[cssClassNum] += 1;
 			return;
 		}
 
 		document.getElementsByClassName("dropdown-content")[cssClassNum].style.display = "none";
-		this.times_clicked = 0;
+		this.times_clicked[cssClassNum] = 0;
+	}
+
+	showDropup(buttNum){
+		if (!this.times_clicked[buttNum] == 1){
+			document.getElementById("nodes-list").style.display = "block";
+			this.times_clicked[buttNum] += 1;
+			return
+		}
+		
+		document.getElementById("nodes-list").style.display = "none";
+		this.times_clicked[buttNum] = 0;
 	}
 }
 

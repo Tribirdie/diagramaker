@@ -1,3 +1,5 @@
+import {addEdge} from '@xyflow/react';
+
 class Recipes{
 	createNode(ids, pos, labels, types, isDraggable){
 		const newNode = {
@@ -12,17 +14,35 @@ class Recipes{
 		return newNode
 
 	}
+
+	createEdge(ids, targets, sources, tHandle, sHandle){
+		const newEdge = {
+			id: ids.toString(),
+			source: sources,
+			target: targets,
+			targetHandle: tHandle,
+			sourceHandle: sHandle,
+			type: 'textEdge'
+		}
+	
+		return newEdge
+	}
 }
 
-class NodeOven{
+class Oven{
 	constructor(recipe){
 		this.recipe = recipe;
 	}
 
-	render = (type, props, {setNodes, nodes}) =>{
-		const node = this.recipe.createNode(props[0], props[1], props[2], props[3], props[4])
-		setNodes((nds) => nds.concat(node))
+	renderNode = (props, {setNodes, nodes}) =>{
+		const node = this.recipe.createNode(props[0], props[1], props[2], props[3], props[4]);
+		setNodes((nds) => nds.concat(node));
+	}
+
+	renderEdge = (props, {setEdges, edges}) =>{
+		const edge = this.recipe.createEdge(props[0], props[1], props[2], props[3], props[4]);
+		setEdges((eds) => addEdge(edge, edges));
 	}
 }
 
-export {Recipes, NodeOven};
+export {Recipes, Oven};

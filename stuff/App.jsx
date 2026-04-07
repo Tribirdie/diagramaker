@@ -11,7 +11,7 @@ import Origin from './Origin'
 import RectangularNode from './RectangularNode'
 import TextEdge from './TextEdge'
 import {DropdownButton, ImportButton, ExportButton} from './TopButtons'
-import {Recipes, NodeOven} from './Nodes'
+import {Recipes, Oven} from './Nodes'
 
 const nodeTypes = {circleNode: CircleNode, origin: Origin, RectNode: RectangularNode}
 const edgeTypes = {textEdge: TextEdge}
@@ -19,44 +19,12 @@ const edgeTypes = {textEdge: TextEdge}
 let node = [];
 const edge = [];
 
-const createNode = (ids, pos,labels, types, isDraggable) =>{
-	const newnode = {
-		id: ids.toString(),
-		position: pos,
-		data: {label:labels},
-		type: types,
-		// only false for origin cursor. it should only move on click on pane, includes connecting edges.
-		draggable: isDraggable 	}
-
-	return newnode
-}
-
-const createEdge = (ids, targets, sources, tHandle, sHandle) =>{
-	const newEdge = {
-		id: ids.toString(),
-		source: sources,
-		target: targets,
-		targetHandle: tHandle,
-		sourceHandle: sHandle,
-		type: 'textEdge'
-	}
-
-	return newEdge
-}
-
 let clicked = 0;
 let origin_exists = false;
 let pos = {x:50, y:50}
 let edgeDropped = false;
 let target = 'left';
 let source = 'right'
-let header_butt_count = 0;
-let export_butt_count = 0;
-let import_butt_count = 0;
-let run = true;
-let img_run = true;
-let count = 1;
-let nodes_butt_count = 0;
 
 function Inner({setNodes, nodes, onNodesChange, setEdges, edges, onEdgesChange}){
 	const edgeReconnect = useRef(true);
@@ -67,7 +35,7 @@ function Inner({setNodes, nodes, onNodesChange, setEdges, edges, onEdgesChange})
 	const ExportButt = new ExportButton(DropButton, reactFlow, node);
 
 	const Recipe = new Recipes(); 
-	const Oven = new NodeOven(Recipe);
+	const Baker = new Oven(Recipe);
 
 	const getPos = (e) => {
 		if (!edgeDropped){
@@ -76,8 +44,8 @@ function Inner({setNodes, nodes, onNodesChange, setEdges, edges, onEdgesChange})
 		
 
 		        if (!origin_exists){
-				const OriginNode = createNode("og", pos, "", "origin", false)
-				setNodes((nds) => nds.concat(OriginNode))
+				const originNode = ["og", pos, "", "origin", false]
+				Baker.renderNode(originNode, {setNodes, nodes})
 				origin_exists = true;
 			}
 			
@@ -86,7 +54,7 @@ function Inner({setNodes, nodes, onNodesChange, setEdges, edges, onEdgesChange})
 					return node
 				}
 
-			        return createNode("og", pos, "", "origin", false)
+			        return Recipe.createNode("og", pos, "", "origin", false)
 			}))
 		}
 
@@ -95,41 +63,32 @@ function Inner({setNodes, nodes, onNodesChange, setEdges, edges, onEdgesChange})
 
 	const MakeSquare = useCallback(() => {
 		const props = [Math.random(), pos, "", "RectNode", true]
-		Oven.render("node", props, {setNodes, nodes})
+		Baker.renderNode(props, {setNodes, nodes})
 	}, []);
 
 	const MakeCircle = useCallback(() => {
 		const props = [Math.random(), pos, "", "circleNode", true]
-		Oven. render("node", props, {setNodes, nodes})
+		Baker.renderNode(props, {setNodes, nodes})
 	}, [])
 
+	const connectHandles = (handleId, cmp,src, tar) =>{
+		if (handleId == cmp){
+			source = src;
+			target = target;
+		}
+	}
+
 	const onConnectStart = useCallback((_, {handleId}) =>{
-
-		if (handleId == "bottom"){
-			source = handleId
-			target = "top"
-		}
-
-		if (handleId == "top"){
-			source = "bottom"
-			target = handleId
-		}
-
-		if (handleId == "right"){
-			source = handleId;
-			target = "left";
-		}
-
-		if (handleId == "left"){
-			source = "right";
-			target = handleId;
-		}
+		connectHandles(handleId, "bottom", "bottom" ,"top")
+		connectHandles(handleId, "top", "bottom", "top")
+		connectHandles(handleId, "right", "right", "left")
+		connectHandles(handleId, "left", "right", "left")
 	})
 
 	const onConnect = useCallback((connection) =>{
-		const CreatedEdge = createEdge(Math.random(), connection.target, connection.source, target, source)
+		const CreatedEdge = [Math.random(), connection.target, connection.source, target, source]
+		Baker.renderEdge(CreatedEdge, {setEdges, edges})
 		edgeDropped = true;
-		setEdges((eds) => addEdge(CreatedEdge, eds));
 	}, [setEdges]);
 
 	const onConnectEnd = useCallback(() =>{
@@ -154,17 +113,6 @@ function Inner({setNodes, nodes, onNodesChange, setEdges, edges, onEdgesChange})
 
 	}, [setEdges])
 
-	const showNodesList = () =>{
-		if (nodes_butt_count == 0){
-			document.getElementById("nodes-list").style.display = "flex";
-			nodes_butt_count += 1;
-		}
-
-		else{
-			document.getElementById("nodes-list").style.display = "none";
-			nodes_butt_count = 0;
-		}
-	}
 	return 	(
 		<div style={{ height: '100%', width: '100%' }}>
 		<ReactFlow nodes={nodes} 
@@ -223,7 +171,7 @@ function Inner({setNodes, nodes, onNodesChange, setEdges, edges, onEdgesChange})
 
 
 		<div id="nodes">
-		<button id="butt" onClick={showNodesList}>Nodes</button>
+		<button id="butt" onClick={() => {DropButton.showDropup(2)}}>Nodes</button>
 		</div>
 
 		</Panel>
