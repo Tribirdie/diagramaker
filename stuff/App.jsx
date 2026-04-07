@@ -19,19 +19,6 @@ const edgeTypes = {textEdge: TextEdge}
 let node = [];
 const edge = [];
 
-const createEdge = (ids, targets, sources, tHandle, sHandle) =>{
-	const newEdge = {
-		id: ids.toString(),
-		source: sources,
-		target: targets,
-		targetHandle: tHandle,
-		sourceHandle: sHandle,
-		type: 'textEdge'
-	}
-
-	return newEdge
-}
-
 let clicked = 0;
 let origin_exists = false;
 let pos = {x:50, y:50}
