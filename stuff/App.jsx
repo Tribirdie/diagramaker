@@ -3,8 +3,8 @@ import {React, useCallback, useRef} from 'react'
 import {reconnectEdge, addEdge, useEdgesState,
 	Position, ReactFlow, MarkerType, ReactFlowProvider, useReactFlow,
 	applyNodeChanges, useNodesState, 
-	Panel, Background, Controls, ControlButton, BackgroundVariant,
-	ConnectionMode, getNodesBounds, getViewportForBounds} from '@xyflow/react';
+	Panel, Background, BackgroundVariant,
+	ConnectionMode} from '@xyflow/react';
 import '@xyflow/react/dist/style.css';
 import CircleNode from './CircleNode'
 import Origin from './Origin'
@@ -99,6 +99,7 @@ function Inner({setNodes, nodes, onNodesChange, setEdges, edges, onEdgesChange})
 		edgeDropped = true;
 		edgeReconnect.current = false;
 	}, []);
+
 	const onReconnect = useCallback((oldEdge, newConnection) =>{
 		edgeDropped = true;
 		edgeReconnect.current = true;
