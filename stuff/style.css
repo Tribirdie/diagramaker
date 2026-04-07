@@ -169,10 +169,12 @@
 
 #input{
 	width: 100px;
+	border-radius: 20px;
 }
 
 #textarea{
 	width: 50px;
+	border-radius: 10px;
 }
 #rectangle{
 	position: relative;
