@@ -10,6 +10,8 @@ import CircleNode from './CircleNode'
 import Origin from './Origin'
 import RectangularNode from './RectangularNode'
 import TextEdge from './TextEdge'
+import {DropdownButton, ImportButton, ExportButton} from './TopButtons'
+import {Recipes, NodeOven} from './Nodes'
 
 const nodeTypes = {circleNode: CircleNode, origin: Origin, RectNode: RectangularNode}
 const edgeTypes = {textEdge: TextEdge}
@@ -55,11 +57,17 @@ let run = true;
 let img_run = true;
 let count = 1;
 let nodes_butt_count = 0;
-const hola = "Exportar como diagrama";
 
 function Inner({setNodes, nodes, onNodesChange, setEdges, edges, onEdgesChange}){
-	const edgeReconnect = useRef(true)
+	const edgeReconnect = useRef(true);
 	const reactFlow = useReactFlow();
+
+	const DropButton = new DropdownButton();
+	const ImportButt = new ImportButton(DropButton, true, 1);
+	const ExportButt = new ExportButton(DropButton, reactFlow, node);
+
+	const Recipe = new Recipes(); 
+	const Oven = new NodeOven(Recipe);
 
 	const getPos = (e) => {
 		if (!edgeDropped){
@@ -84,17 +92,15 @@ function Inner({setNodes, nodes, onNodesChange, setEdges, edges, onEdgesChange})
 
 		edgeDropped = false;
 	}
-	const addNode = (type, isDraggable) => {
-		const CreatedNode = createNode(Math.random(), pos, Math.random(), type, isDraggable)
-		setNodes((nds) => nds.concat(CreatedNode));
-	}
 
 	const MakeSquare = useCallback(() => {
-		addNode('RectNode', true)
+		const props = [Math.random(), pos, "", "RectNode", true]
+		Oven.render("node", props, {setNodes, nodes})
 	}, []);
 
 	const MakeCircle = useCallback(() => {
-		addNode('circleNode', true)
+		const props = [Math.random(), pos, "", "circleNode", true]
+		Oven. render("node", props, {setNodes, nodes})
 	}, [])
 
 	const onConnectStart = useCallback((_, {handleId}) =>{
@@ -148,106 +154,8 @@ function Inner({setNodes, nodes, onNodesChange, setEdges, edges, onEdgesChange})
 
 	}, [setEdges])
 
-	const FileDialog = () => {
-
-		const read = new FileReader()
-		read.onload = (e) => {
-			const str_to_obj = JSON.parse(e.target.result)
-			setNodes([])
-			setEdges([])
-			setNodes((nds) => nds.concat(str_to_obj.nodes))
-			setEdges((eds) => eds.concat(str_to_obj.edges))
-			run = true;
-			count += 1
-		};
-
-		const file = document.getElementById("file-dialog")
-
-		// don't open file dialog if clicked for second time. that's when the nodes load.
-		if (run && count != 2){
-			file.click();
-			count = 1;
-		}
- 
-		const ImportedNodes = file.files[0];
-
-		try{
-			const p = read.readAsText(ImportedNodes);
-		}
-
-		catch (e){
-			run = false;
-		}
-
-	}
-
-	const ExportImage = () =>{
-		const getApp = document.querySelector('.react-flow__viewport')
-		const nodesBounds = reactFlow.getNodesBounds(node)
-		const viewport = getViewportForBounds(nodesBounds, 1366, 768, 0.5, 2);
-
-		toPng(getApp, {
-			width: 1366,
-			height: 1366,
-			style: {
-				width: 1366,
-				height: 768,
-			},
-		}
-		).then( (url) => {
-			const dwn = document.createElement('a');
-			dwn.href = url
-			dwn.download = url.split('/').pop();
-			document.body.appendChild(dwn);
-			dwn.click()
-			document.body.removeChild(dwn);
-		})
-	}
-	const ExportJson = () =>{
-		const json = reactFlow.toObject();
-		const json_string = JSON.stringify(json);
-
-		const str_to_blob = new Blob([json_string], {type: "application/json"});
-		const url = URL.createObjectURL(str_to_blob);
-
-		const dwn = document.createElement('a');
-		dwn.href = url;
-		dwn.download = url.split('/').pop();
-		document.body.appendChild(dwn);
-		dwn.click();
-		document.body.removeChild(dwn);
-	}
-
-	const buttClickImport = () => {
-		const element = document.getElementsByClassName('dropdown-content');
-
-		if (!header_butt_count == 1){
-			document.getElementsByClassName("dropdown-content")[0].style.display = "block";
-			header_butt_count += 1;
-			return;
-		}
-
-		document.getElementsByClassName("dropdown-content")[0].style.display = "none";
-		header_butt_count = 0;
-	}
-
-	const buttClickExport = () => {
-		const element = document.getElementsByClassName('dropdown-content');
-
-		if (!export_butt_count == 1){
-			document.getElementsByClassName("dropdown-content")[1].style.display = "block";
-			export_butt_count += 1;
-			return;
-		}
-
-		document.getElementsByClassName("dropdown-content")[1].style.display = "none";
-		export_butt_count = 0;
-	}
-
 	const showNodesList = () =>{
 		if (nodes_butt_count == 0){
-			const elm = document.querySelector(".react-flow__panel")
-			elm.style.removeProperty('z-index'); 
 			document.getElementById("nodes-list").style.display = "flex";
 			nodes_butt_count += 1;
 		}
@@ -280,18 +188,18 @@ function Inner({setNodes, nodes, onNodesChange, setEdges, edges, onEdgesChange})
 		<header id="header">
 		<input type="file" accept=".json" id="file-dialog"></input>
 		
-		<div class="dropdown">
-		<button id="import-button" onClick={buttClickImport}> Import</button>
-		<div class="dropdown-content">
-		<button onClick={FileDialog}>Import Diagram</button>
+		<div className="dropdown">
+		<button id="import-button" onClick={() => {ImportButt.clickFunc.showDropdown(0)}}> Import</button>
+		<div className="dropdown-content">
+		<button onClick={() => {ImportButt.FileDialog({setNodes, nodes, onNodesChange, setEdges, edges, onEdgesChange})}}>Import Diagram</button>
 		</div>
 		</div>
 
-		<div class="dropdown">
-		<button id="export-button" onClick={buttClickExport}>Export</button>
-		<div class="dropdown-content">
-		<button onClick={ExportJson}>{hola}</button>
-		<button onClick={ExportImage}>Export as image</button>
+		<div className="dropdown">
+		<button id="export-button" onClick={() =>{ImportButt.clickFunc.showDropdown(1)}}>Export</button>
+		<div className="dropdown-content">
+		<button onClick={ExportButt.ExportJson}>Export as JSON</button>
+		<button onClick={ExportButt.ExportImage}>Export as image</button>
 		</div>
 		</div>
 

@@ -1,4 +1,5 @@
 {
+  "homepage": "http://joedoe.github.io/your-app",
   "scripts": {
     "build": "vite build",
     "dev": "vite",
