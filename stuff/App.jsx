@@ -13,18 +13,25 @@ import TextEdge from './TextEdge'
 import {DropdownButton, ImportButton, ExportButton} from './TopButtons'
 import {Recipes, Oven} from './Nodes'
 
+window.addEventListener("load", () =>{
+	const dropdowns = document.getElementsByClassName("dropdown-content");
+	dropdowns[0].children[0].style.borderRadius = "0px 0px 5px 5px";
+	dropdowns[1].children[1].style.borderRadius = "0px 0px 5px 5px";
+
+
+})
 const nodeTypes = {circleNode: CircleNode, origin: Origin, RectNode: RectangularNode}
 const edgeTypes = {textEdge: TextEdge}
 
-let node = [];
+const node = [];
 const edge = [];
 
 let clicked = 0;
 let origin_exists = false;
 let pos = {x:50, y:50}
 let edgeDropped = false;
-let target = 'left';
-let source = 'right'
+let source = "right";
+let target = "left";
 
 function Inner({setNodes, nodes, onNodesChange, setEdges, edges, onEdgesChange}){
 	const edgeReconnect = useRef(true);
@@ -44,8 +51,9 @@ function Inner({setNodes, nodes, onNodesChange, setEdges, edges, onEdgesChange})
 		
 
 		        if (!origin_exists){
-				const originNode = ["og", pos, "", "origin", false]
-				Baker.renderNode(originNode, {setNodes, nodes})
+				const props = ["og", pos, "", "origin", false]
+				const node = Recipe.createNode(props[0], props[1], props[2], props[3], props[4]);
+				setNodes((nds) => nds.concat(node));
 				origin_exists = true;
 			}
 			
@@ -62,19 +70,20 @@ function Inner({setNodes, nodes, onNodesChange, setEdges, edges, onEdgesChange})
 	}
 
 	const MakeSquare = useCallback(() => {
-		const props = [Math.random(), pos, "", "RectNode", true]
-		Baker.renderNode(props, {setNodes, nodes})
+		const node = Recipe.createNode(Math.random(), pos, "", "RectNode", true)
+		setNodes((nds) => nds.concat(node));
+
 	}, []);
 
 	const MakeCircle = useCallback(() => {
-		const props = [Math.random(), pos, "", "circleNode", true]
-		Baker.renderNode(props, {setNodes, nodes})
+		const node = Recipe.createNode(Math.random(), pos, "", "circleNode", true)
+		setNodes((nds) => nds.concat(node));
 	}, [])
 
 	const connectHandles = (handleId, cmp,src, tar) =>{
 		if (handleId == cmp){
 			source = src;
-			target = target;
+			target = tar;
 		}
 	}
 
@@ -86,8 +95,8 @@ function Inner({setNodes, nodes, onNodesChange, setEdges, edges, onEdgesChange})
 	})
 
 	const onConnect = useCallback((connection) =>{
-		const CreatedEdge = [Math.random(), connection.target, connection.source, target, source]
-		Baker.renderEdge(CreatedEdge, {setEdges, edges})
+		const CreatedEdge = Recipe.createEdge(Math.random(), connection.target, connection.source, target, source)
+		setEdges((eds) => addEdge(CreatedEdge, eds));
 		edgeDropped = true;
 	}, [setEdges]);
 
@@ -140,7 +149,7 @@ function Inner({setNodes, nodes, onNodesChange, setEdges, edges, onEdgesChange})
 		<div className="dropdown">
 		<button id="import-button" onClick={() => {ImportButt.clickFunc.showDropdown(0)}}> Import</button>
 		<div className="dropdown-content">
-		<button onClick={() => {ImportButt.FileDialog({setNodes, nodes, onNodesChange, setEdges, edges, onEdgesChange})}}>Import Diagram</button>
+		<button onClick={() => {ImportButt.FileDialog({setNodes, nodes, onNodesChange, setEdges, edges, onEdgesChange})}}>Select Diagram</button>
 		</div>
 		</div>
 

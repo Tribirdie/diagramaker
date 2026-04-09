@@ -9,8 +9,17 @@ class DropdownButton{
 	showDropdown(cssClassNum){
 		if (!this.times_clicked[cssClassNum] == 1){
 			document.getElementsByClassName("dropdown-content")[cssClassNum].style.display = "block";
+
+			if (cssClassNum == 0){
+				document.getElementById("header").style.borderRadius = "5px 5px 5px 1px";
+			}
+
 			this.times_clicked[cssClassNum] += 1;
 			return;
+		}
+
+		if (cssClassNum == 0){
+			document.getElementById("header").style.borderRadius = "5px 5px 5px 5px";
 		}
 
 		document.getElementsByClassName("dropdown-content")[cssClassNum].style.display = "none";
@@ -37,22 +46,25 @@ class ImportButton{
 	}
 
 	FileDialog = ({setNodes, nodes, onNodesChange, setEdges, edges, onEdgesChange}) => {
+		const file = document.getElementById("file-dialog")
 		const read = new FileReader()
+	
 		read.onload = (e) => {
 			const str_to_obj = JSON.parse(e.target.result)
 			setNodes([])
 			setEdges([])
 			setNodes((nds) => nds.concat(str_to_obj.nodes))
 			setEdges((eds) => eds.concat(str_to_obj.edges))
-			this.run = true;
-			this.timesClickedImport += 1
+			this.timesClickedImport = 1
+			document.getElementsByClassName("dropdown-content")[0].children[0].textContent = "Select Diagram"
 		};
 
-		const file = document.getElementById("file-dialog")
 		// don't open file dialog if clicked for second time. that's when the nodes load.
-		if (this.run && this.timesClickedImport != 2){
+		if (this.timesClickedImport != 2){
+			read.onload = null; // release previous result
+			this.timesClickedImport = 2;
 			file.click();
-			this.timesClickedImport = 1;
+			document.getElementsByClassName("dropdown-content")[0].children[0].textContent = "Load Diagram";
 		}
 
 		const ImportedNodes = file.files[0];
@@ -62,7 +74,7 @@ class ImportButton{
 		}
 
 		catch (e){
-			this.run = false;
+
 		}
 
 	}
