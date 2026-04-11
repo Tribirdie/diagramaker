@@ -10,12 +10,16 @@ class DropdownButton{
 		const element = document.getElementsByClassName("dropdown-content")[cssClassNum]
 
 		if (!this.times_clicked[cssClassNum] == 1){
-			element.style.display = "block";
-			element.style.height = "50px";
-			element.querySelector("button").style.height = "50px";
-
-			if (cssClassNum == 0){
+			if (cssClassNucssClassNum  == 0){
+				element.style.height = "50px";
+				element.querySelectorAll("button").style.height = "50px";
 				document.getElementById("header").style.borderRadius = "5px 5px 5px 1px";
+			}
+
+			else{
+				element.style.height = "100px";
+				element.querySelectorAll("button")[0].style.height = "50px";
+				element.querySelectorAll("button")[1].style.height = "50px";
 			}
 
 			this.times_clicked[cssClassNum] += 1;
@@ -23,12 +27,18 @@ class DropdownButton{
 		}
 
 		if (cssClassNum == 0){
+			element.style.height = "0px";
+			element.querySelector("button").style.height = "0px";
 			document.getElementById("header").style.borderRadius = "5px 5px 5px 5px";
 		}
 
-		element.style.display = "block";
-		element.style.height = "0px";
-		element.querySelector("button").style.height = "0px";
+		else{
+			element.style.height = "0px";
+			const d = element.querySelectorAll("button")
+			console.log(d)
+			element.querySelectorAll("button")[0].style.height = "0px";
+			element.querySelectorAll("button")[1].style.height = "0px";
+		}
 
 		this.times_clicked[cssClassNum] = 0;
 	}

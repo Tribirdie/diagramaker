@@ -15,8 +15,8 @@ import {Recipes, Oven} from './Nodes'
 
 window.addEventListener("load", () =>{
 	const dropdowns = document.getElementsByClassName("dropdown-content");
-	dropdowns[0].children[0].style.borderRadius = "0px 0px 5px 5px";
-	dropdowns[1].children[1].style.borderRadius = "0px 0px 5px 5px";
+	dropdowns[0].children[0].style.borderRadius = "0px 0px 10px 10px";
+	dropdowns[1].children[1].style.borderRadius = "0px 0px 10px 10px";
 
 
 })
