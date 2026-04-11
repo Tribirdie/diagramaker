@@ -10,9 +10,9 @@ class DropdownButton{
 		const element = document.getElementsByClassName("dropdown-content")[cssClassNum]
 
 		if (!this.times_clicked[cssClassNum] == 1){
-			if (cssClassNucssClassNum  == 0){
+			if (cssClassNum  == 0){
 				element.style.height = "50px";
-				element.querySelectorAll("button").style.height = "50px";
+				element.querySelector("button").style.height = "50px";
 				document.getElementById("header").style.borderRadius = "5px 5px 5px 1px";
 			}
 
