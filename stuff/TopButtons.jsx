@@ -7,11 +7,20 @@ class DropdownButton{
 	}
 
 	showDropdown(cssClassNum){
-		if (!this.times_clicked[cssClassNum] == 1){
-			document.getElementsByClassName("dropdown-content")[cssClassNum].style.display = "block";
+		const element = document.getElementsByClassName("dropdown-content")[cssClassNum]
 
-			if (cssClassNum == 0){
+
+		if (!this.times_clicked[cssClassNum] == 1){
+			if (cssClassNum  == 0){
+				element.style.height = "50px";
+				element.querySelector("button").style.height = "50px";
 				document.getElementById("header").style.borderRadius = "5px 5px 5px 1px";
+			}
+
+			else{
+				element.style.height = "100px";
+				element.querySelectorAll("button")[0].style.height = "50px";
+				element.querySelectorAll("button")[1].style.height = "50px";
 			}
 
 			this.times_clicked[cssClassNum] += 1;
@@ -19,10 +28,20 @@ class DropdownButton{
 		}
 
 		if (cssClassNum == 0){
-			document.getElementById("header").style.borderRadius = "5px 5px 5px 5px";
+			element.style.height = "0px";
+			element.querySelector("button").style.height = "0px";
+			element.addEventListener("transitionend", () =>{
+				document.getElementById("header").style.borderRadius = "5px 5px 5px 5px";
+			}, {once: true});
 		}
 
-		document.getElementsByClassName("dropdown-content")[cssClassNum].style.display = "none";
+		else{
+			element.style.height = "0px";
+			element.querySelectorAll("button")
+			element.querySelectorAll("button")[0].style.height = "0px";
+			element.querySelectorAll("button")[1].style.height = "0px";
+		}
+
 		this.times_clicked[cssClassNum] = 0;
 	}
 

@@ -3,8 +3,8 @@ import {React, useCallback, useRef} from 'react'
 import {reconnectEdge, addEdge, useEdgesState,
 	Position, ReactFlow, MarkerType, ReactFlowProvider, useReactFlow,
 	applyNodeChanges, useNodesState, 
-	Panel, Background, Controls, ControlButton, BackgroundVariant,
-	ConnectionMode, getNodesBounds, getViewportForBounds} from '@xyflow/react';
+	Panel, Background, BackgroundVariant,
+	ConnectionMode} from '@xyflow/react';
 import '@xyflow/react/dist/style.css';
 import CircleNode from './CircleNode'
 import Origin from './Origin'
@@ -15,8 +15,8 @@ import {Recipes, Oven} from './Nodes'
 
 window.addEventListener("load", () =>{
 	const dropdowns = document.getElementsByClassName("dropdown-content");
-	dropdowns[0].children[0].style.borderRadius = "0px 0px 5px 5px";
-	dropdowns[1].children[1].style.borderRadius = "0px 0px 5px 5px";
+	dropdowns[0].children[0].style.borderRadius = "0px 0px 10px 10px";
+	dropdowns[1].children[1].style.borderRadius = "0px 0px 10px 10px";
 
 
 })
@@ -108,6 +108,7 @@ function Inner({setNodes, nodes, onNodesChange, setEdges, edges, onEdgesChange})
 		edgeDropped = true;
 		edgeReconnect.current = false;
 	}, []);
+
 	const onReconnect = useCallback((oldEdge, newConnection) =>{
 		edgeDropped = true;
 		edgeReconnect.current = true;
