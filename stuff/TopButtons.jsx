@@ -7,8 +7,12 @@ class DropdownButton{
 	}
 
 	showDropdown(cssClassNum){
+		const element = document.getElementsByClassName("dropdown-content")[cssClassNum]
+
 		if (!this.times_clicked[cssClassNum] == 1){
-			document.getElementsByClassName("dropdown-content")[cssClassNum].style.display = "block";
+			element.style.display = "block";
+			element.style.height = "50px";
+			element.querySelector("button").style.height = "50px";
 
 			if (cssClassNum == 0){
 				document.getElementById("header").style.borderRadius = "5px 5px 5px 1px";
@@ -22,7 +26,10 @@ class DropdownButton{
 			document.getElementById("header").style.borderRadius = "5px 5px 5px 5px";
 		}
 
-		document.getElementsByClassName("dropdown-content")[cssClassNum].style.display = "none";
+		element.style.display = "block";
+		element.style.height = "0px";
+		element.querySelector("button").style.height = "0px";
+
 		this.times_clicked[cssClassNum] = 0;
 	}
 
@@ -89,7 +96,7 @@ class ExportButton{
 
 	ExportImage = () =>{
 		const getApp = document.querySelector('.react-flow__viewport');
-		const nodesBounds = this.hook.getNodesBounds(node);
+		const nodesBounds = this.hook.getNodesBounds(this.node);
 		const viewport = getViewportForBounds(nodesBounds, 1366, 768, 0.5, 2);
 
 		toPng(getApp, {
