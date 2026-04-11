@@ -89,7 +89,7 @@ class ExportButton{
 
 	ExportImage = () =>{
 		const getApp = document.querySelector('.react-flow__viewport');
-		const nodesBounds = this.hook.getNodesBounds(node);
+		const nodesBounds = this.hook.getNodesBounds(this.node);
 		const viewport = getViewportForBounds(nodesBounds, 1366, 768, 0.5, 2);
 
 		toPng(getApp, {
