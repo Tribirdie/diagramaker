@@ -12,15 +12,15 @@ class DropdownButton{
 
 		if (!this.times_clicked[cssClassNum] == 1){
 			if (cssClassNum  == 0){
-				element.style.height = "50px";
-				element.querySelector("button").style.height = "50px";
+				element.style.height = "10vh";
+				element.querySelector("button").style.height = "10vh";
 				document.getElementById("header").style.borderRadius = "5px 5px 5px 1px";
 			}
 
 			else{
-				element.style.height = "100px";
-				element.querySelectorAll("button")[0].style.height = "50px";
-				element.querySelectorAll("button")[1].style.height = "50px";
+				element.style.height = "20vh";
+				element.querySelectorAll("button")[0].style.height = "10vh";
+				element.querySelectorAll("button")[1].style.height = "10vh";
 			}
 
 			this.times_clicked[cssClassNum] += 1;
@@ -46,13 +46,14 @@ class DropdownButton{
 	}
 
 	showDropup(buttNum){
+		const nodes_list = document.getElementById("nodes-list");
 		if (!this.times_clicked[buttNum] == 1){
-			document.getElementById("nodes-list").style.display = "block";
+			nodes_list.style.height = "25vh";
 			this.times_clicked[buttNum] += 1;
 			return
 		}
 		
-		document.getElementById("nodes-list").style.display = "none";
+		document.getElementById("nodes-list").style.height = "0px";
 		this.times_clicked[buttNum] = 0;
 	}
 }

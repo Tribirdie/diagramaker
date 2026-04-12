@@ -206,13 +206,14 @@
 	display: flex;
 	align-items: center;
 	justify-content: center;
-	width: 250px;
+	width: 23.5vw;
 	height: 40px;
 	background-color: #304b6b;
 	border-radius: 20px;
 	z-index: 1;
-	box-shadow: 0 3px 3px 0 black;
+	box-shadow: 0 3px 3px 0 rgba(0,0,0,0.5);
 }
+
 
 
 #butt{
@@ -230,12 +231,11 @@
 
 #nodes-list{
 	border-radius: 20px 20px 0px 0px;
-	display: none;
 	flex-direction: column;
 	margin-left: 2.6vw;
-	width: 175px;
-	height: 150px;
+	width: 18vw;
+	height: 0px;
 	background-color: #2F3A47;
 	overflow: auto;
-}
-
+	transition: height 2s ease;
+	box-shadow: 0 3px 3px 3px rgba(0, 0.5, 0.5, 0.5); 
