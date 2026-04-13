@@ -1,7 +1,7 @@
 import {toPng} from 'html-to-image'
 import {React, useCallback, useRef} from 'react'
 import {reconnectEdge, addEdge, useEdgesState,
-	Position, ReactFlow, MarkerType, ReactFlowProvider, useReactFlow,
+	Position, ReactFlow, MarkerType, ReactFlowProvider, useReactFlow, useViewport,
 	applyNodeChanges, useNodesState, 
 	Panel, Background, BackgroundVariant,
 	ConnectionMode} from '@xyflow/react';
@@ -12,6 +12,7 @@ import RectangularNode from './RectangularNode'
 import TextEdge from './TextEdge'
 import {DropdownButton, ImportButton, ExportButton} from './TopButtons'
 import {Recipes, Oven} from './Nodes'
+import {ConnectionBuilder} from './EventHandlers'
 
 window.addEventListener("load", () =>{
 	const dropdowns = document.getElementsByClassName("dropdown-content");
@@ -20,6 +21,7 @@ window.addEventListener("load", () =>{
 
 
 })
+
 const nodeTypes = {circleNode: CircleNode, origin: Origin, RectNode: RectangularNode}
 const edgeTypes = {textEdge: TextEdge}
 
@@ -30,8 +32,8 @@ let clicked = 0;
 let origin_exists = false;
 let pos = {x:50, y:50}
 let edgeDropped = false;
-let source = "right";
-let target = "left";
+let handlesCheck = [ ["bottom", "bottom", "top"], ["top", "bottom", "top"]
+	, ["right", "right", "left"] , ["left", "right", "left"]];
 
 function Inner({setNodes, nodes, onNodesChange, setEdges, edges, onEdgesChange}){
 	const edgeReconnect = useRef(true);
@@ -43,6 +45,15 @@ function Inner({setNodes, nodes, onNodesChange, setEdges, edges, onEdgesChange})
 
 	const Recipe = new Recipes(); 
 	const Baker = new Oven(Recipe);
+	const connectionBuilder = new ConnectionBuilder();
+	connectionBuilder.setProps({setEdges});
+	connectionBuilder.setEdgeDropped(false);
+	connectionBuilder.setEdgeReconnect(edgeReconnect);
+	connectionBuilder.setHandlesCheck(handlesCheck);
+	connectionBuilder.setRecipe(Recipe);
+	connectionBuilder.setSource("right");
+	connectionBuilder.setTarget("left");
+	const connectionHandler = connectionBuilder.build();
 
 	const getPos = (e) => {
 		if (!edgeDropped){
@@ -80,49 +91,6 @@ function Inner({setNodes, nodes, onNodesChange, setEdges, edges, onEdgesChange})
 		setNodes((nds) => nds.concat(node));
 	}, [])
 
-	const connectHandles = (handleId, cmp,src, tar) =>{
-		if (handleId == cmp){
-			source = src;
-			target = tar;
-		}
-	}
-
-	const onConnectStart = useCallback((_, {handleId}) =>{
-		connectHandles(handleId, "bottom", "bottom" ,"top")
-		connectHandles(handleId, "top", "bottom", "top")
-		connectHandles(handleId, "right", "right", "left")
-		connectHandles(handleId, "left", "right", "left")
-	})
-
-	const onConnect = useCallback((connection) =>{
-		const CreatedEdge = Recipe.createEdge(Math.random(), connection.target, connection.source, target, source)
-		setEdges((eds) => addEdge(CreatedEdge, eds));
-		edgeDropped = true;
-	}, [setEdges]);
-
-	const onConnectEnd = useCallback(() =>{
-		edgeDropped = true;
-	}, []);
-
-	const onReconnectStart = useCallback(() =>{
-		edgeDropped = true;
-		edgeReconnect.current = false;
-	}, []);
-
-	const onReconnect = useCallback((oldEdge, newConnection) =>{
-		edgeDropped = true;
-		edgeReconnect.current = true;
-		setEdges((eds) => reconnectEdge(oldEdge,newConnection,eds)); 
-	}, [setEdges]);
-
-	const onReconnectEnd = useCallback((_, edge) =>{
-		if (!edgeReconnect.current){
-			setEdges((eds) => eds.filter((e) => e.id !== edge.id))
-			edgeDropped = true;
-		}
-
-	}, [setEdges])
-
 	return 	(
 		<div style={{ height: '100%', width: '100%' }}>
 		<ReactFlow nodes={nodes} 
@@ -134,12 +102,12 @@ function Inner({setNodes, nodes, onNodesChange, setEdges, edges, onEdgesChange})
 		nodeTypes={nodeTypes}
 		edgeTypes={edgeTypes}
 		onPaneClick={getPos}
-		onConnectStart={onConnectStart}
-		onConnect={onConnect}
-		onConnectEnd={onConnectEnd}
-		onReconnect={onReconnect}
-		onReconnectStart={onReconnectStart}
-		onReconnectEnd={onReconnectEnd}
+		onConnectStart={connectionHandler.onConnectStart}
+		onConnect={connectionHandler.onConnect}
+		onConnectEnd={connectionHandler.onConnectEnd}
+		onReconnect={connectionHandler.onReconnect}
+		onReconnectStart={connectionHandler.onReconnectStart}
+		onReconnectEnd={connectionHandler.onReconnectEnd}
 		>
 
 		<Panel position="top-left">
@@ -161,7 +129,6 @@ function Inner({setNodes, nodes, onNodesChange, setEdges, edges, onEdgesChange})
 		</div>
 		</div>
 
-		<button id="header-button">Help</button>
 		</header>
 		</Panel>
 

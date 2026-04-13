@@ -240,3 +240,28 @@
 	transition: height 2s ease;
 	box-shadow: 0 3px 3px 3px rgba(0, 0.5, 0.5, 0.5); 
 }
+
+#coordinates{
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	flex-direction: row;
+	width: 15vw;
+	height: 35px;
+	background-color: #304b6b;
+	border-radius: 20px;
+}
+
+#coordX{
+	margin-right: 10px;
+}
+
+#coordXInput{
+	width: 50px;
+	height: 10px;
+	border-radius: 5px;
+}
+
+#d{
+	display: inline-block;
+}
