@@ -67,6 +67,12 @@ class ImportButton{
 
 	FileDialog = ({setNodes, nodes, onNodesChange, setEdges, edges, onEdgesChange}) => {
 		const file = document.getElementById("file-dialog")
+
+		file.addEventListener("cancel", () =>{
+			this.timesClickedImport = 1;
+			document.getElementsByClassName("dropdown-content")[0].children[0].textContent = "Select Diagram"
+		});
+
 		const read = new FileReader()
 	
 		read.onload = (e) => {
@@ -110,15 +116,13 @@ class ExportButton{
 	ExportImage = () =>{
 		const getApp = document.querySelector('.react-flow__viewport');
 		const nodesBounds = this.hook.getNodesBounds(this.node);
-		const viewport = getViewportForBounds(nodesBounds, 1366, 768, 0.5, 2);
+		const app = document.getElementById("app");
+		const getDimensions = app.getBoundingClientRect();
+		const viewport = getViewportForBounds(nodesBounds, getDimensions.width, getDimensions.height, 0.5, 2);
 
 		toPng(getApp, {
-			width: 1366,
-			height: 1366,
-			style: {
-				width: 1366,
-				height: 768,
-			},
+			width: getDimensions.width,
+			height: getDimensions.height,
 		}
 
 		).then( (url) => {
