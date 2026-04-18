@@ -34,6 +34,7 @@ let pos = {x:50, y:50}
 let edgeDropped = false;
 let handlesCheck = [ ["bottom", "bottom", "top"], ["top", "bottom", "top"]
 	, ["right", "right", "left"] , ["left", "right", "left"]];
+let times_clicked = 0;
 
 function Inner({setNodes, nodes, onNodesChange, setEdges, edges, onEdgesChange}){
 	const edgeReconnect = useRef(true);
@@ -90,9 +91,75 @@ function Inner({setNodes, nodes, onNodesChange, setEdges, edges, onEdgesChange})
 		const node = Recipe.createNode(Math.random(), pos, "", "circleNode", true)
 		setNodes((nds) => nds.concat(node));
 	}, [])
+	const HideConfig = useCallback((elements) =>{
+		if (times_clicked == 0){
+			document.getElementById(elements[0]).style.display = "none"
+			document.getElementById(elements[1]).style.display = "none";
+
+			times_clicked += 1;
+		}
+
+		else{
+			document.getElementById(elements[0]).style.display = "flex";
+			document.getElementById(elements[1]).style.display = "flex";
+			console.log(elements[1])
+
+			times_clicked = 0;
+		}
+	
+	})
 
 	return 	(
+
 		<div style={{ height: '100%', width: '100%' }}>
+		<div id="overlay" style={{height:"100%", width:"100%", zIndex: "50", position:"fixed"}}>
+
+		<header id="settings">
+		<button id="exitButt" onClick={() => {document.getElementById("overlay").style.display="none"}}>Exit</button>
+		<hr style={{marginTop: "0", marginBottom: "1px"}}></hr>
+
+		<div style={{display: "flex", backgroundColor: "white", borderRadius: "20px", height: "8vh"}}>
+		<button id="magnifyingGlass">h</button>
+		<input id="settingsinput"></input>
+		</div>
+
+		<hr style={{color: "#355B87",height:"2px", backgroundColor: "#355B87", marginBottom: "0", marginTop: "0"}}></hr>
+
+		<div style={{display: "flex"}}>
+
+		<div id="settingsContent" style={{height: "70vh", width: "25%", backgroundColor: "red", display: "flex"}}>
+
+		<div style={{marginBottom: "auto", display: "flex", flexDirection: "column"}}>
+		<button onClick={() => {HideConfig(["configPNG", "configJSON"])}}>Output</button>
+		<button style={{width: "10vw"}}>Appearance</button>
+		</div>
+
+		</div>
+
+		<div id="longVertLine"></div>
+
+		<div style={{width: "100%", height: "70vh", backgroundColor: "green", display: "flex"
+				, alignItems: "center", justifyContent: "center", 
+				flexDirection: "column", overflow: "auto"}}>
+
+		<div id="configPNG">
+		<header style={{marginLeft: "45%", display: "flex"}}>Image</header>
+		<hr></hr>
+
+		</div>
+		
+		<div id="configJSON">
+		<header style={{marginLeft: "45%", display: "flex"}}>JSON</header>
+		<hr></hr>
+		</div>
+
+		</div>
+
+		</div>
+
+		</header>
+		</div>
+
 		<ReactFlow nodes={nodes} 
 		edges={edges}
 
@@ -115,20 +182,21 @@ function Inner({setNodes, nodes, onNodesChange, setEdges, edges, onEdgesChange})
 		<input type="file" accept=".json" id="file-dialog"></input>
 		
 		<div className="dropdown">
-		<button id="import-button" onClick={() => {ImportButt.clickFunc.showDropdown(0)}}> Import</button>
+		<button id="button" onClick={() => {ImportButt.clickFunc.showDropdown(0)}}> Import</button>
 		<div className="dropdown-content">
 		<button onClick={() => {ImportButt.FileDialog({setNodes, nodes, onNodesChange, setEdges, edges, onEdgesChange})}}>Select Diagram</button>
 		</div>
 		</div>
 
 		<div className="dropdown">
-		<button id="export-button" onClick={() =>{ImportButt.clickFunc.showDropdown(1)}}>Export</button>
+		<button id="button" onClick={() =>{ImportButt.clickFunc.showDropdown(1)}}>Export</button>
 		<div className="dropdown-content">
 		<button onClick={ExportButt.ExportJson}>Export as JSON</button>
 		<button onClick={ExportButt.ExportImage}>Export as image</button>
 		</div>
 		</div>
 
+		<button id="button" onClick={() => {document.getElementById("overlay").style.display="flex"}}>Settings</button>
 		</header>
 		</Panel>
 
@@ -155,9 +223,10 @@ function Inner({setNodes, nodes, onNodesChange, setEdges, edges, onEdgesChange})
 
 		<Background variant={BackgroundVariant.Lines}/>
 
-
 		</ReactFlow>
 		</div>
+
+
  	)
 
 }
