@@ -276,8 +276,10 @@
 }
 
 #settings{
+	outline-style: ridge;
+	outline-color: #262c36;
 	position: relative;
-	background-color: #262c36;
+	background-color: #1a2a3a;
 	height: 80vh;
 	width: 50vw;
 	overflow: hidden;
@@ -285,21 +287,26 @@
 }
 
 #settingsinput{
-	margin-top: 0.5vh;
+	margin-top: 1.6vh;
 	display: block;
 	margin-left: 6vw;
 	margin-bottom: 1vh;
 	width: 85%; 
-	height: 13%;
+	height: 60%;
 	border: none;
+	background-color: #1C283E;
+	color: rgba(255, 255, 255, 0.8);
+}
+
+#settingsinput:focus{
+	outline: none;
 }
 
 #magnifyingGlass{
 	position: absolute;
-	margin-top: 4px;
 	margin-left: 10px;
 	width: 5vw;
-	height: 6vh;
+	height: 8vh;
 	background-color: white;
 	border-radius: 10px;
 }
@@ -310,7 +317,7 @@
 	height: 6vh;
 	width: 8vw;
 	color: white;
-      	border: none;
+	border-radius: 30px;
 }
 
 #settingsContent{
@@ -322,19 +329,74 @@
 #longVertLine{
 	height: 70vh;
 	width: 2px;
-	background-color: blue;
+	background-color: rgba(255,255,255,0.08);
 }
 
 #configPNG{
 	margin-bottom: auto;
-	background-color: white;
 	width: 525px;
 	height: 200px;
 }
 
 #configJSON{
 	margin-bottom: auto;
-	background-color: white;
 	width: 525px;
 	height: 200px;
+}
+
+#configStyle{
+	margin-bottom: auto;
+	width: 525px;
+	height: 200px;
+}
+
+.sideButtonsBar{
+	margin-bottom: auto;
+	display: flex;
+	flex-direction: column;
+}
+
+.sideButtonsBar button{
+	width: 10vw;
+	height: 10vh;
+	border: none;
+	background-color: transparent;
+	color: rgba(255, 255, 255, 0.8);
+	border-left: 1px solid;
+	border-color: transparent;
+}
+
+.sideButtonsBar button:hover{
+	background-color: #213F74;
+	border-left: 2px solid;
+	border-color: #1D54B7;
+	border-radius: 10px;
+}
+#ExitDiv{
+	background-color: #0f1620;
+}
+
+#DropdownSelect{
+	margin-top: 5px;
+	border-radius: 20px;
+	padding-right: 100px;
+	background-color: rgba(13, 38, 64, 5);
+	border-color: rgba(255, 255, 255, 0.2);
+	color: white;
+	height: 40px;
+}
+
+#DropdownSelect option{
+	color: rgba(255, 255, 255, 0.2)
+}
+
+#DimensionInput{
+	border-radius: 20px;
+	background-color: rgba(13, 38, 64, 5);
+	border-color: rgba(255, 255, 255, 0.2);
+	color: rgba(255, 255, 255, 0.8);
+}
+
+#DimensionInput{
+	outline: none;
 }

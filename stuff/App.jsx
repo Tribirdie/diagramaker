@@ -27,6 +27,7 @@ const edgeTypes = {textEdge: TextEdge}
 
 const node = [];
 const edge = [];
+const elementsToHide = [["configPNG"], ["configStyle"]]
 
 let clicked = 0;
 let origin_exists = false;
@@ -82,29 +83,46 @@ function Inner({setNodes, nodes, onNodesChange, setEdges, edges, onEdgesChange})
 	}
 
 	const MakeSquare = useCallback(() => {
-		const node = Recipe.createNode(Math.random(), pos, "", "RectNode", true)
+		const node = Recipe.createNode(Math.random(), pos, "", "RectNode", true);
 		setNodes((nds) => nds.concat(node));
 
 	}, []);
 
 	const MakeCircle = useCallback(() => {
-		const node = Recipe.createNode(Math.random(), pos, "", "circleNode", true)
+		const node = Recipe.createNode(Math.random(), pos, "", "circleNode", true);
 		setNodes((nds) => nds.concat(node));
 	}, [])
-	const HideConfig = useCallback((elements) =>{
-		if (times_clicked == 0){
-			document.getElementById(elements[0]).style.display = "none"
-			document.getElementById(elements[1]).style.display = "none";
 
-			times_clicked += 1;
+	const HideConfig = useCallback((elements, divnumber) =>{
+		const buttons = document.querySelectorAll(".sideButtonsBar button")
+
+		for (let butt = 0; butt < buttons.length; butt++){
+			if (butt != divnumber){
+				buttons[butt].style.borderLeft = "0px solid";
+				buttons[butt].style.borderColor = "#1D54B7"
+				continue;
+			}
+
+			buttons[butt].style.borderLeft = "2px solid";
+			buttons[butt].style.borderColor = "#1D54B7"
 		}
 
-		else{
-			document.getElementById(elements[0]).style.display = "flex";
-			document.getElementById(elements[1]).style.display = "flex";
-			console.log(elements[1])
+		for (let div = 0; div < elements.length; div++){
+			for (let i = 0; i < elements[div].length; i++){
+				if (div == divnumber){
+					document.getElementById(elements[div][i]).style.display = "initial";
+					const buttons = document.querySelectorAll(".sideButtonsBar button");
+	
+				}
+			
+				else{
 
-			times_clicked = 0;
+					document.getElementById(elements[div][i]).style.display = "none";
+					const buttons = document.querySelectorAll(".sideButtonsBar button");
+
+				}
+			}
+		
 		}
 	
 	})
@@ -115,42 +133,76 @@ function Inner({setNodes, nodes, onNodesChange, setEdges, edges, onEdgesChange})
 		<div id="overlay" style={{height:"100%", width:"100%", zIndex: "50", position:"fixed"}}>
 
 		<header id="settings">
+		<div id="ExitDiv">
 		<button id="exitButt" onClick={() => {document.getElementById("overlay").style.display="none"}}>Exit</button>
-		<hr style={{marginTop: "0", marginBottom: "1px"}}></hr>
+		<hr style={{color: "rgba(255,255,255,0.08)", backgroundColor: "rgba(255,255,255,0.08)"}}></hr>
+		</div>
 
-		<div style={{display: "flex", backgroundColor: "white", borderRadius: "20px", height: "8vh"}}>
+		<div style={{display: "flex", backgroundColor: "#1C283E", borderRadius: "50px", height: "8vh"}}>
 		<button id="magnifyingGlass">h</button>
 		<input id="settingsinput"></input>
 		</div>
 
-		<hr style={{color: "#355B87",height:"2px", backgroundColor: "#355B87", marginBottom: "0", marginTop: "0"}}></hr>
+		<hr style={{color: "#355B87",height:"1px", backgroundColor: "rgba(255,255,255,0.08)", marginBottom: "0", marginTop: "0"}}></hr>
 
 		<div style={{display: "flex"}}>
 
-		<div id="settingsContent" style={{height: "70vh", width: "25%", backgroundColor: "red", display: "flex"}}>
+		<div id="settingsContent" style={{height: "70vh", width: "25%", backgroundColor: "#162030", display: "flex"}}>
 
-		<div style={{marginBottom: "auto", display: "flex", flexDirection: "column"}}>
-		<button onClick={() => {HideConfig(["configPNG", "configJSON"])}}>Output</button>
-		<button style={{width: "10vw"}}>Appearance</button>
+		<div className="sideButtonsBar">
+		<button onClick={() => {HideConfig(elementsToHide, 0)}}>Output</button>
+		<button onClick={() => {HideConfig(elementsToHide, 1)}}>Appearance</button>
 		</div>
 
 		</div>
 
 		<div id="longVertLine"></div>
 
-		<div style={{width: "100%", height: "70vh", backgroundColor: "green", display: "flex"
-				, alignItems: "center", justifyContent: "center", 
-				flexDirection: "column", overflow: "auto"}}>
+		<div style={{width: "100%", height: "100vh", backgroundColor: "#1a2a3a", minHeight: "0", overflow: "auto"}}>
 
-		<div id="configPNG">
-		<header style={{marginLeft: "45%", display: "flex"}}>Image</header>
-		<hr></hr>
+		<div id="configPNG" style={{display: "block"}}>
+		<div style={{backgroundColor: "#1c283e", width: "100%"}}>
+		<header style={{backgroundColor: "#1c283e", color: "rgba(255, 255, 255, 0.8)", 
+				marginLeft: "45%", display: "flex"}}>Image</header>
+		<hr style={{height: "2px", width: "100vw", color: "#204b6b", backgroundColor: "rgba(255,255,255,0.012)"}}></hr>
+		</div>
+
+		<div>
+		<div style={{display: "flex", flexDirection: "rows"}}>
+		<p style={{color: "rgba(255, 255, 255, 0.8)", marginLeft: "2%"}}>Width: </p>
+		<div style={{display: "flex", justifyContent: "center", alignItems: "center"}}>
+		<input id="DimensionInput"></input>
+		</div>
+
+		</div>
+
+		<div style={{display: "flex", flexDirection: "rows"}}>
+		<p style={{color: "rgba(255, 255, 255, 0.8)", marginLeft: "2%"}}>Height: </p>
+
+		<div style={{display: "flex", justifyContent: "center", alignItems: "center"}}>
+		<input id="DimensionInput"></input>
+		</div>
+
+		</div>
+
+		</div>
 
 		</div>
 		
-		<div id="configJSON">
-		<header style={{marginLeft: "45%", display: "flex"}}>JSON</header>
-		<hr></hr>
+		<div id="configStyle" style={{display: "none"}}>
+		<div style={{backgroundColor: "#1c283e"}}>
+		<header style={{color: "rgba(255,255,255, 0.8)", marginLeft: "40%", display: "flex"}}>Appearance</header>
+		<hr style={{color: "#204b6b"}}></hr>
+		</div>
+
+		<div style={{display: "flex", flexDirection: "rows", marginLeft: "20px"}}>
+		<p style={{color: "rgba(255, 255, 255, 0.8)"}}>Language:</p>
+		<select id="DropdownSelect">
+		<option value="english">English</option>
+		<option value="spanish">Spanish</option>
+		</select>
+		</div>
+
 		</div>
 
 		</div>
