@@ -1,5 +1,7 @@
 import '@xyflow/react/dist/style.css';
 import {useCallback} from 'react'
+import exit from './assets/exitButton.png'
+import glass from './assets/magnifyingGlass.png'
 
 const elementsToHide = [["configPNG"], ["configStyle"]];
 
@@ -45,7 +47,7 @@ function ExitSection({}){
 	return (
 		<div id="exitdiv">
 		<button id="exitButt" onClick={() => {document.getElementById("overlay").style.display="none"}}>
-		<img src="assets/exitButton.png" width="30px" height="30px"></img>
+		<img src={exit} width="30px" height="30px"></img>
 		</button>
 		<hr style={{color: "rgba(255,255,255,0.08)", backgroundColor: "rgba(255,255,255,0.08)"}}></hr>
 		</div>
@@ -56,7 +58,7 @@ function SearchBar({}) {
 	return (
 		<div style={{display: "flex", backgroundColor: "#1C283E", borderRadius: "50px", height: "8vh"}}>
 		<button style={{border: "none", backgroundColor: "transparent"}}>
-		<img src="assets/magnifyingGlass.png" width="45px" height="45px"></img>
+		<img src={glass} width="45px" height="45px"></img>
 		</button>
 
 		<input id="settingsinput"></input>
