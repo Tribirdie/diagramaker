@@ -13,21 +13,22 @@ import TextEdge from './TextEdge'
 import {DropdownButton, ImportButton, ExportButton} from './TopButtons'
 import {Recipes, Oven} from './Nodes'
 import {ConnectionBuilder} from './EventHandlers'
+import {Settings} from './Layout'
+import {LanguageObj, LanguageWords} from './Languages'
 
 window.addEventListener("load", () =>{
 	const dropdowns = document.getElementsByClassName("dropdown-content");
 	dropdowns[0].children[0].style.borderRadius = "0px 0px 10px 10px";
 	dropdowns[1].children[1].style.borderRadius = "0px 0px 10px 10px";
-
-
-})
+});
 
 const nodeTypes = {circleNode: CircleNode, origin: Origin, RectNode: RectangularNode}
 const edgeTypes = {textEdge: TextEdge}
 
 const node = [];
 const edge = [];
-const elementsToHide = [["configPNG"], ["configStyle"]]
+
+const language = LanguageObj(LanguageWords, window.localStorage.getItem("lang"));
 
 let clicked = 0;
 let origin_exists = false;
@@ -93,124 +94,12 @@ function Inner({setNodes, nodes, onNodesChange, setEdges, edges, onEdgesChange})
 		setNodes((nds) => nds.concat(node));
 	}, [])
 
-	const HideConfig = useCallback((elements, divnumber) =>{
-		const buttons = document.querySelectorAll(".sideButtonsBar button")
-
-		for (let butt = 0; butt < buttons.length; butt++){
-			if (butt != divnumber){
-				buttons[butt].style.borderLeft = "0px solid";
-				buttons[butt].style.borderColor = "#1D54B7"
-				continue;
-			}
-
-			buttons[butt].style.borderLeft = "2px solid";
-			buttons[butt].style.borderColor = "#1D54B7"
-		}
-
-		for (let div = 0; div < elements.length; div++){
-			for (let i = 0; i < elements[div].length; i++){
-				if (div == divnumber){
-					document.getElementById(elements[div][i]).style.display = "initial";
-					const buttons = document.querySelectorAll(".sideButtonsBar button");
-	
-				}
-			
-				else{
-
-					document.getElementById(elements[div][i]).style.display = "none";
-					const buttons = document.querySelectorAll(".sideButtonsBar button");
-
-				}
-			}
-		
-		}
-	
-	})
-
 	return 	(
 
 		<div style={{ height: '100%', width: '100%' }}>
-		<div id="overlay" style={{height:"100%", width:"100%", zIndex: "50", position:"fixed"}}>
-
-		<header id="settings">
-		<div id="ExitDiv">
-		<button id="exitButt" onClick={() => {document.getElementById("overlay").style.display="none"}}>Exit</button>
-		<hr style={{color: "rgba(255,255,255,0.08)", backgroundColor: "rgba(255,255,255,0.08)"}}></hr>
-		</div>
-
-		<div style={{display: "flex", backgroundColor: "#1C283E", borderRadius: "50px", height: "8vh"}}>
-		<button id="magnifyingGlass">h</button>
-		<input id="settingsinput"></input>
-		</div>
-
-		<hr style={{color: "#355B87",height:"1px", backgroundColor: "rgba(255,255,255,0.08)", marginBottom: "0", marginTop: "0"}}></hr>
-
-		<div style={{display: "flex"}}>
-
-		<div id="settingsContent" style={{height: "70vh", width: "25%", backgroundColor: "#162030", display: "flex"}}>
-
-		<div className="sideButtonsBar">
-		<button onClick={() => {HideConfig(elementsToHide, 0)}}>Output</button>
-		<button onClick={() => {HideConfig(elementsToHide, 1)}}>Appearance</button>
-		</div>
-
-		</div>
-
-		<div id="longVertLine"></div>
-
-		<div style={{width: "100%", height: "100vh", backgroundColor: "#1a2a3a", minHeight: "0", overflow: "auto"}}>
-
-		<div id="configPNG" style={{display: "block"}}>
-		<div style={{backgroundColor: "#1c283e", width: "100%"}}>
-		<header style={{backgroundColor: "#1c283e", color: "rgba(255, 255, 255, 0.8)", 
-				marginLeft: "45%", display: "flex"}}>Image</header>
-		<hr style={{height: "2px", width: "100vw", color: "#204b6b", backgroundColor: "rgba(255,255,255,0.012)"}}></hr>
-		</div>
-
-		<div>
-		<div style={{display: "flex", flexDirection: "rows"}}>
-		<p style={{color: "rgba(255, 255, 255, 0.8)", marginLeft: "2%"}}>Width: </p>
-		<div style={{display: "flex", justifyContent: "center", alignItems: "center"}}>
-		<input id="DimensionInput"></input>
-		</div>
-
-		</div>
-
-		<div style={{display: "flex", flexDirection: "rows"}}>
-		<p style={{color: "rgba(255, 255, 255, 0.8)", marginLeft: "2%"}}>Height: </p>
-
-		<div style={{display: "flex", justifyContent: "center", alignItems: "center"}}>
-		<input id="DimensionInput"></input>
-		</div>
-
-		</div>
-
-		</div>
-
-		</div>
 		
-		<div id="configStyle" style={{display: "none"}}>
-		<div style={{backgroundColor: "#1c283e"}}>
-		<header style={{color: "rgba(255,255,255, 0.8)", marginLeft: "40%", display: "flex"}}>Appearance</header>
-		<hr style={{color: "#204b6b"}}></hr>
-		</div>
-
-		<div style={{display: "flex", flexDirection: "rows", marginLeft: "20px"}}>
-		<p style={{color: "rgba(255, 255, 255, 0.8)"}}>Language:</p>
-		<select id="DropdownSelect">
-		<option value="english">English</option>
-		<option value="spanish">Spanish</option>
-		</select>
-		</div>
-
-		</div>
-
-		</div>
-
-		</div>
-
-		</header>
-		</div>
+		<Settings language={language}>
+		</Settings>
 
 		<ReactFlow nodes={nodes} 
 		edges={edges}
@@ -234,21 +123,44 @@ function Inner({setNodes, nodes, onNodesChange, setEdges, edges, onEdgesChange})
 		<input type="file" accept=".json" id="file-dialog"></input>
 		
 		<div className="dropdown">
-		<button id="button" onClick={() => {ImportButt.clickFunc.showDropdown(0)}}> Import</button>
+		<button id="button" onClick={() => {ImportButt.clickFunc.showDropdown(0)}}>{language.import}</button>
 		<div className="dropdown-content">
-		<button onClick={() => {ImportButt.FileDialog({setNodes, nodes, onNodesChange, setEdges, edges, onEdgesChange})}}>Select Diagram</button>
+		<button onClick={() => {ImportButt.FileDialog({setNodes, nodes, 
+			onNodesChange, setEdges, edges, onEdgesChange})}}>{language.importJson}</button>
 		</div>
 		</div>
 
 		<div className="dropdown">
-		<button id="button" onClick={() =>{ImportButt.clickFunc.showDropdown(1)}}>Export</button>
+		<button id="button" onClick={() =>{ImportButt.clickFunc.showDropdown(1)}}>{language.export}</button>
 		<div className="dropdown-content">
-		<button onClick={ExportButt.ExportJson}>Export as JSON</button>
-		<button onClick={ExportButt.ExportImage}>Export as image</button>
+		<button onClick={ExportButt.ExportJson}>{language.exportJson}</button>
+		<button onClick={ExportButt.ExportImage}>{language.exportImg}</button>
 		</div>
 		</div>
 
-		<button id="button" onClick={() => {document.getElementById("overlay").style.display="flex"}}>Settings</button>
+		<button id="button" onClick={() => {
+			document.getElementById("overlay").style.display="flex"
+			const dimensionInputs = document.querySelectorAll(".ImageDimensionsOptions input");
+			
+			for (let dimension = 0; dimension < dimensionInputs.length; dimension++){
+				if (dimension == 0){
+					dimensionInputs[dimension].addEventListener("keydown", (e) =>{
+						if (e.key == "Enter"){
+							document.imageWidth = dimensionInputs[dimension].value;
+						}
+					});
+				}
+
+				else{
+					dimensionInputs[dimension].addEventListener("keydown", (e) =>{
+						if (e.key == "Enter"){
+							document.imageHeight = dimensionInputs[dimension].value;
+						}
+					});
+				}
+			}
+		}}>{language.settings}</button>
+
 		</header>
 		</Panel>
 
@@ -257,10 +169,10 @@ function Inner({setNodes, nodes, onNodesChange, setEdges, edges, onEdgesChange})
 		<div id="nodes-list">
                 <div id="rows">
                   <button id="bottom-bar-butts" onClick={MakeSquare}>
-                  Square
+		{language.square}
                   </button> 
-                  <button id="bottom-bar-butts" onClick={MakeCircle} title="Draws a circle at the origin"
-                     >Circle
+                  <button id="bottom-bar-butts" onClick={MakeCircle} title="Draws a circle at the origin">
+		{language.circle}
                   </button>
                 </div>
 		
@@ -268,7 +180,7 @@ function Inner({setNodes, nodes, onNodesChange, setEdges, edges, onEdgesChange})
 
 
 		<div id="nodes">
-		<button id="butt" onClick={() => {DropButton.showDropup(2)}}>Nodes</button>
+		<button id="butt" onClick={() => {DropButton.showDropup(2)}}>{language.nodes}</button>
 		</div>
 
 		</Panel>

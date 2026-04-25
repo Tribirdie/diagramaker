@@ -287,15 +287,16 @@
 }
 
 #settingsinput{
-	margin-top: 1.6vh;
 	display: block;
-	margin-left: 6vw;
-	margin-bottom: 1vh;
-	width: 85%; 
-	height: 60%;
-	border: none;
+	margin-bottom: 5vh;
+	width: 95%; 
+	height: 90%;
 	background-color: #1C283E;
 	color: rgba(255, 255, 255, 0.8);
+	font-size: 20px;
+	border-radius: 10px;
+        border-color: rgba(255, 255, 255, 0.2);
+        border-style: solid;	
 }
 
 #settingsinput:focus{
@@ -398,5 +399,37 @@
 }
 
 #DimensionInput{
+	outline: none;
+}
+
+#searchBar{
+	display: flex;
+	background-color: #1C283E;
+	height: 8vh;
+	border-radius: 50px;
+}
+
+
+.ImageDimensionsOptions{
+	display: flex;
+       	flex-direction: rows;
+}
+
+.ImageDimensionsOptions p{
+	color: rgba(255, 255, 255, 0.8);
+	margin-left: 2%;
+}
+
+.ImageDimensionsOptions div{
+	display: flex;
+	justify-content: center;
+	align-items: center;
+}
+
+.ImageDimensionsOptions input{
+	border-radius: 20px;
+	background-color: rgba(13, 38, 64, 5);
+	border-color: rgba(255, 255, 255, 0.2);
+	color: rgba(255, 255, 255, 0.8);
 	outline: none;
 }
