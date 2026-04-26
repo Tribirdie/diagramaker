@@ -1,4 +1,7 @@
 import '@xyflow/react/dist/style.css';
+import {applyNodeChanges, useNodesState,
+	Panel, Position, Background, BackgroundVariant,
+	ConnectionMode} from '@xyflow/react';
 import {useCallback} from 'react'
 import exit from './assets/exitButton.png'
 import glass from './assets/magnifyingGlass.png'
@@ -8,7 +11,8 @@ const elementsToHide = [["configPNG"], ["configStyle"]];
 const HideConfig = (elements, divnumber) =>{
 	document.getElementById("DropdownSelect").addEventListener("change", (event) =>{
 		window.localStorage.setItem("lang", parseInt(event.target.value));
-		window.location.reload();
+		console.log(window.localStorage);
+		location.reload();
 	});
 
 	const buttons = document.querySelectorAll(".sideButtonsBar button")
@@ -122,6 +126,9 @@ function MainContent({language}){
 		<div style={{display: "flex", flexDirection: "rows", marginLeft: "20px"}}>
 		<p style={{color: "rgba(255, 255, 255, 0.8)"}}>{language.language}:</p>
 		<select id="DropdownSelect">
+		<option value="">{language.select}</option>
+		<option value="3">Français</option>
+		<option value="2">Italiano</option>
 		<option value="1">English</option>
 		<option value="0">Español</option>
 		</select>
@@ -154,4 +161,95 @@ function Settings({language}){
 	)
 }
 
-export {Settings};
+
+function TopPanel({ImportButt, ExportButt, language}){
+	return (
+		<header id="header">
+		<input type="file" accept=".json" id="file-dialog"></input>
+
+		<div className="dropdown">
+		<button id="button" onClick={() => {ImportButt.clickFunc.showDropdown(0)}}>{language.import}</button>
+		<div className="dropdown-content">
+		<button onClick={() => {ImportButt.FileDialog({setNodes, nodes,
+			onNodesChange, setEdges, edges, onEdgesChange})}}>{language.importJson}</button>
+		</div>
+		</div>
+
+		<div className="dropdown">
+		<button id="button" onClick={() =>{ImportButt.clickFunc.showDropdown(1)}}>{language.export}</button>
+		<div className="dropdown-content">
+		<button onClick={ExportButt.ExportJson}>{language.exportJson}</button>
+		<button onClick={ExportButt.ExportImage}>{language.exportImg}</button>
+		</div>
+		</div>
+
+		<button id="button" onClick={() => {
+			document.getElementById("overlay").style.display="flex"
+			const dimensionInputs = document.querySelectorAll(".ImageDimensionsOptions input");
+
+			for (let dimension = 0; dimension < dimensionInputs.length; dimension++){
+				if (dimension == 0){
+					dimensionInputs[dimension].addEventListener("keydown", (e) =>{
+						if (e.key == "Enter"){
+							document.imageWidth = dimensionInputs[dimension].value;
+						}
+					});
+				}
+
+				else{
+					dimensionInputs[dimension].addEventListener("keydown", (e) =>{
+						if (e.key == "Enter"){
+							document.imageHeight = dimensionInputs[dimension].value;
+						}
+					});
+				}
+			}
+		}}>{language.settings}</button>
+
+		</header>
+	)
+}
+
+function PanelBottom({MakeSquare, MakeCircle, DropButton, language}){
+	return (
+		<>
+		<div id="nodes-list">
+                <div id="rows">
+                  <button id="bottom-bar-butts" onClick={MakeSquare}>
+		{language.square}
+                  </button>
+                  <button id="bottom-bar-butts" onClick={MakeCircle} title="Draws a circle at the origin">
+		{language.circle}
+                  </button>
+                </div>
+
+		</div>
+
+		<div id="nodes">
+		<button id="butt" onClick={() => {DropButton.showDropup(2)}}>{language.nodes}</button>
+		</div>
+		</>
+ 	)
+
+}
+
+function Main({ImportButt, ExportButt, DropButton, MakeSquare, MakeCircle, language}){
+	return (
+		<>
+		<Panel position="top-left">
+		<TopPanel ImportButt={ImportButt} ExportButt={ExportButt} language={language}>
+		</TopPanel>
+		</Panel>
+
+		<Panel position="bottom-left">
+
+		<PanelBottom MakeSquare={MakeSquare} MakeCircle={MakeCircle} DropButton={DropButton} language={language}>
+		</PanelBottom>
+
+		</Panel>
+
+		<Background variant={BackgroundVariant.Lines}/>
+		</>
+ 	)
+}
+export {Settings, Main};

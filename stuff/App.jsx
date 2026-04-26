@@ -13,7 +13,7 @@ import TextEdge from './TextEdge'
 import {DropdownButton, ImportButton, ExportButton} from './TopButtons'
 import {Recipes, Oven} from './Nodes'
 import {ConnectionBuilder} from './EventHandlers'
-import {Settings} from './Layout'
+import {Settings, Main} from './Layout'
 import {LanguageObj, LanguageWords} from './Languages'
 
 window.addEventListener("load", () =>{
@@ -33,7 +33,6 @@ const language = LanguageObj(LanguageWords, window.localStorage.getItem("lang"))
 let clicked = 0;
 let origin_exists = false;
 let pos = {x:50, y:50}
-let edgeDropped = false;
 let handlesCheck = [ ["bottom", "bottom", "top"], ["top", "bottom", "top"]
 	, ["right", "right", "left"] , ["left", "right", "left"]];
 let times_clicked = 0;
@@ -59,7 +58,7 @@ function Inner({setNodes, nodes, onNodesChange, setEdges, edges, onEdgesChange})
 	const connectionHandler = connectionBuilder.build();
 
 	const getPos = (e) => {
-		if (!edgeDropped){
+		if (!connectionHandler.edgeDropped){
 			const screenPos = {x:e.clientX, y:e.clientY};
 			pos = reactFlow.screenToFlowPosition(screenPos)
 		
@@ -80,7 +79,7 @@ function Inner({setNodes, nodes, onNodesChange, setEdges, edges, onEdgesChange})
 			}))
 		}
 
-		edgeDropped = false;
+		connectionHandler.edgeDropped = false;
 	}
 
 	const MakeSquare = useCallback(() => {
@@ -118,74 +117,11 @@ function Inner({setNodes, nodes, onNodesChange, setEdges, edges, onEdgesChange})
 		onReconnectEnd={connectionHandler.onReconnectEnd}
 		>
 
-		<Panel position="top-left">
-		<header id="header">
-		<input type="file" accept=".json" id="file-dialog"></input>
-		
-		<div className="dropdown">
-		<button id="button" onClick={() => {ImportButt.clickFunc.showDropdown(0)}}>{language.import}</button>
-		<div className="dropdown-content">
-		<button onClick={() => {ImportButt.FileDialog({setNodes, nodes, 
-			onNodesChange, setEdges, edges, onEdgesChange})}}>{language.importJson}</button>
-		</div>
-		</div>
-
-		<div className="dropdown">
-		<button id="button" onClick={() =>{ImportButt.clickFunc.showDropdown(1)}}>{language.export}</button>
-		<div className="dropdown-content">
-		<button onClick={ExportButt.ExportJson}>{language.exportJson}</button>
-		<button onClick={ExportButt.ExportImage}>{language.exportImg}</button>
-		</div>
-		</div>
-
-		<button id="button" onClick={() => {
-			document.getElementById("overlay").style.display="flex"
-			const dimensionInputs = document.querySelectorAll(".ImageDimensionsOptions input");
-			
-			for (let dimension = 0; dimension < dimensionInputs.length; dimension++){
-				if (dimension == 0){
-					dimensionInputs[dimension].addEventListener("keydown", (e) =>{
-						if (e.key == "Enter"){
-							document.imageWidth = dimensionInputs[dimension].value;
-						}
-					});
-				}
-
-				else{
-					dimensionInputs[dimension].addEventListener("keydown", (e) =>{
-						if (e.key == "Enter"){
-							document.imageHeight = dimensionInputs[dimension].value;
-						}
-					});
-				}
-			}
-		}}>{language.settings}</button>
-
-		</header>
-		</Panel>
-
-		<Panel position="bottom-left">
-
-		<div id="nodes-list">
-                <div id="rows">
-                  <button id="bottom-bar-butts" onClick={MakeSquare}>
-		{language.square}
-                  </button> 
-                  <button id="bottom-bar-butts" onClick={MakeCircle} title="Draws a circle at the origin">
-		{language.circle}
-                  </button>
-                </div>
-		
-		</div>
-
-
-		<div id="nodes">
-		<button id="butt" onClick={() => {DropButton.showDropup(2)}}>{language.nodes}</button>
-		</div>
-
-		</Panel>
-
-		<Background variant={BackgroundVariant.Lines}/>
+		<Main ImportButt={ImportButt} ExportButt={ExportButt} DropButton={DropButton}
+		MakeSquare={MakeSquare}
+		MakeCircle={MakeCircle}
+		language={language}>
+		</Main>
 
 		</ReactFlow>
 		</div>

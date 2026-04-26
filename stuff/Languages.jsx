@@ -5,8 +5,6 @@ const LanguageObj = (words, lang) =>{
 		lang = 1;
 	}
 
-	console.log(words);
-	console.log(lang)
 	return {
 		import: words[lang][0],
 		export: words[lang][1],
@@ -23,18 +21,26 @@ const LanguageObj = (words, lang) =>{
 		height: words[lang][12],
 		output: words[lang][13],
 		image: words[lang][14],
-		loadDiagram: words[lang][15]
-
+		loadDiagram: words[lang][15],
+		select: words[lang][16]
 	}
 }
 
 const LanguageWords = [
 	["Importar", "Exportar", "Cuadrado","Circulo", "Configuracion", "Seleccionar diagrama", "Exportar como JSON",
 		"Exportar como imagen", "Nodos", "Apariencia", "Lenguaje", "Ancho:", "Alto:", "Salida", "Imagen",
-	"Cargar diagrama"],
+	"Cargar diagrama", "Seleccionar de aqui"],
 
 	["Import", "Export", "Square", "Circle" ,"Settings", "Select diagram", "Export as JSON", "Export as image", "Nodes",
-		"Appearance", "Language", "Width:", "Height:", "Output", "Image", "Load diagram"]
+		"Appearance", "Language", "Width:", "Height:", "Output", "Image", "Load diagram", "Select from here"],
+
+	["Importare", "Esportare", "Quadrato", "Cerchio", "Impostazioni", "Seleziona diagramma", "Esporta come JSON",
+		"Esporta come immagine", "Nodi", "Aspetto", "Lingua", "Larghezza:", "Altezza:", "Output", "Immagine",
+	"Carica diagramma", "Seleziona da qui"],
+
+	["Importer", "Exporter", "Carré", "Cercle", "Paramètres", "Sélectionner un diagramme", "Exporter en JSON",
+		"Exporter en image", "Nœuds", "Apparence", "Langue", "Largeur:", "Hauteur:", "Sortie", "Image",
+	"Charger un diagramme", "Sélectionner d'ici"]
 ]
 
 export {LanguageObj, LanguageWords}
