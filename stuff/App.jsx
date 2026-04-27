@@ -93,6 +93,10 @@ function Inner({setNodes, nodes, onNodesChange, setEdges, edges, onEdgesChange})
 		setNodes((nds) => nds.concat(node));
 	}, [])
 
+	const onNodeDoubleClick = useCallback((_, node) =>{
+		setNodes((nds) => nds.filter((n) => n.id != node.id)) 
+	});
+
 	return 	(
 
 		<div style={{ height: '100%', width: '100%' }}>
@@ -115,9 +119,12 @@ function Inner({setNodes, nodes, onNodesChange, setEdges, edges, onEdgesChange})
 		onReconnect={connectionHandler.onReconnect}
 		onReconnectStart={connectionHandler.onReconnectStart}
 		onReconnectEnd={connectionHandler.onReconnectEnd}
+		onNodeDoubleClick={onNodeDoubleClick}
 		>
 
+
 		<Main ImportButt={ImportButt} ExportButt={ExportButt} DropButton={DropButton}
+		 nodes={nodes} setEdges={setEdges} setNodes={setNodes} edges={edges}
 		MakeSquare={MakeSquare}
 		MakeCircle={MakeCircle}
 		language={language}>

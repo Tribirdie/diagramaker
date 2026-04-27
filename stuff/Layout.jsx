@@ -2,18 +2,36 @@ import '@xyflow/react/dist/style.css';
 import {applyNodeChanges, useNodesState,
 	Panel, Position, Background, BackgroundVariant,
 	ConnectionMode} from '@xyflow/react';
-import {useCallback} from 'react'
+import {memo} from 'react'
 import exit from './assets/exitButton.png'
 import glass from './assets/magnifyingGlass.png'
 
 const elementsToHide = [["configPNG"], ["configStyle"]];
 
-const HideConfig = (elements, divnumber) =>{
-	document.getElementById("DropdownSelect").addEventListener("change", (event) =>{
-		window.localStorage.setItem("lang", parseInt(event.target.value));
-		console.log(window.localStorage);
-		location.reload();
+const setLanguage = (event) =>{
+	window.localStorage.setItem("lang", parseInt(event.target.value));
+	location.reload();
+}
+
+const saveDimension = (element, dimension) =>{
+	element.addEventListener("keydown", (e) =>{
+		if (e.key == "Enter"){
+			if (dimension == "w"){
+				document.imageWidth = dimensionInputs[dimension].value;
+			}
+			
+			else{
+				document.imageHeight = imensionInputs[dimension].value;
+			}
+		}
 	});
+
+}
+const HideConfig = (elements, divnumber) =>{
+
+	const dropdown = document.getElementId("DropdownSelect");
+	dropdown.removeEventListener("change", setLanguage);
+	dropdown.addEventListener("change", setLanguage);
 
 	const buttons = document.querySelectorAll(".sideButtonsBar button")
 
@@ -33,14 +51,11 @@ const HideConfig = (elements, divnumber) =>{
 		for (let i = 0; i < elements[div].length; i++){
 			if (div == divnumber){
 				document.getElementById(elements[div][i]).style.display = "initial";
-				const buttons = document.querySelectorAll(".sideButtonsBar button");
 			}
 
 			else{
 
 				document.getElementById(elements[div][i]).style.display = "none";
-				const buttons = document.querySelectorAll(".sideButtonsBar button");
-
 			}
 		}
 
@@ -162,7 +177,7 @@ function Settings({language}){
 }
 
 
-function TopPanel({ImportButt, ExportButt, language}){
+function TopPanel({ImportButt, ExportButt, language, setNodes, nodes, setEdges, edges}){
 	return (
 		<header id="header">
 		<input type="file" accept=".json" id="file-dialog"></input>
@@ -170,8 +185,7 @@ function TopPanel({ImportButt, ExportButt, language}){
 		<div className="dropdown">
 		<button id="button" onClick={() => {ImportButt.clickFunc.showDropdown(0)}}>{language.import}</button>
 		<div className="dropdown-content">
-		<button onClick={() => {ImportButt.FileDialog({setNodes, nodes,
-			onNodesChange, setEdges, edges, onEdgesChange})}}>{language.importJson}</button>
+		<button onClick={() => {ImportButt.FileDialog({setNodes, nodes, setEdges, edges, language})}}>{language.importJson}</button>
 		</div>
 		</div>
 
@@ -189,19 +203,11 @@ function TopPanel({ImportButt, ExportButt, language}){
 
 			for (let dimension = 0; dimension < dimensionInputs.length; dimension++){
 				if (dimension == 0){
-					dimensionInputs[dimension].addEventListener("keydown", (e) =>{
-						if (e.key == "Enter"){
-							document.imageWidth = dimensionInputs[dimension].value;
-						}
-					});
+					saveDimension(dimensionInputs[dimension], "w")
 				}
 
 				else{
-					dimensionInputs[dimension].addEventListener("keydown", (e) =>{
-						if (e.key == "Enter"){
-							document.imageHeight = dimensionInputs[dimension].value;
-						}
-					});
+					saveDimension(dimensionInputs[dimension], "w");
 				}
 			}
 		}}>{language.settings}</button>
@@ -233,11 +239,12 @@ function PanelBottom({MakeSquare, MakeCircle, DropButton, language}){
 
 }
 
-function Main({ImportButt, ExportButt, DropButton, MakeSquare, MakeCircle, language}){
+const Main = memo(({ImportButt, ExportButt, DropButton, MakeSquare, MakeCircle, language, nodes, setEdges, setNodes, edges}) =>{
 	return (
 		<>
 		<Panel position="top-left">
-		<TopPanel ImportButt={ImportButt} ExportButt={ExportButt} language={language}>
+		<TopPanel ImportButt={ImportButt} ExportButt={ExportButt} language={language} nodes={nodes}
+		setEdges={setEdges} setNodes={setNodes} edges={edges}>
 		</TopPanel>
 		</Panel>
 
@@ -251,5 +258,6 @@ function Main({ImportButt, ExportButt, DropButton, MakeSquare, MakeCircle, langu
 		<Background variant={BackgroundVariant.Lines}/>
 		</>
  	)
-}
+})
+
 export {Settings, Main};

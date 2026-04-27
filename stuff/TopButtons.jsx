@@ -65,13 +65,15 @@ class ImportButton{
 		this.timesClickedImport = timesClickedImport;
 	}
 
-	FileDialog = ({setNodes, nodes, onNodesChange, setEdges, edges, onEdgesChange, language}) => {
+	checkForCancel = () =>{
+		this.timesClickedImport = 1;
+		document.getElementsByClassName("dropdown-content")[0].children[0].textContent = language.loadDiagram;
+	}
+
+	FileDialog = ({setNodes, nodes,  setEdges, edges, language}) => {
 		const file = document.getElementById("file-dialog")
 
-		file.addEventListener("cancel", () =>{
-			this.timesClickedImport = 1;
-			document.getElementsByClassName("dropdown-content")[0].children[0].textContent = language.loadDiagram;
-		});
+		file.addEventListener("cancel", this.checkForCancel);
 
 		const read = new FileReader()
 	
@@ -94,7 +96,6 @@ class ImportButton{
 		}
 
 		const ImportedNodes = file.files[0];
-
 		try{
 			const readText = read.readAsText(ImportedNodes);
 		}
@@ -102,8 +103,8 @@ class ImportButton{
 		catch (e){
 
 		}
-
 	}
+
 }
 
 class ExportButton{
