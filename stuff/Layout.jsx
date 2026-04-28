@@ -17,11 +17,13 @@ const saveDimension = (element, dimension) =>{
 	element.addEventListener("keydown", (e) =>{
 		if (e.key == "Enter"){
 			if (dimension == "w"){
-				document.imageWidth = dimensionInputs[dimension].value;
+				document.imageWidth = element.value;
+				console.log(document.imageWidth)
 			}
 			
 			else{
-				document.imageHeight = imensionInputs[dimension].value;
+				document.imageHeight = element.value;
+				console.log(document.imageHeight)
 			}
 		}
 	});
@@ -29,7 +31,7 @@ const saveDimension = (element, dimension) =>{
 }
 const HideConfig = (elements, divnumber) =>{
 
-	const dropdown = document.getElementId("DropdownSelect");
+	const dropdown = document.getElementById("DropdownSelect");
 	dropdown.removeEventListener("change", setLanguage);
 	dropdown.addEventListener("change", setLanguage);
 
@@ -207,7 +209,7 @@ function TopPanel({ImportButt, ExportButt, language, setNodes, nodes, setEdges, 
 				}
 
 				else{
-					saveDimension(dimensionInputs[dimension], "w");
+					saveDimension(dimensionInputs[dimension], "h");
 				}
 			}
 		}}>{language.settings}</button>

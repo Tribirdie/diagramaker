@@ -1,4 +1,6 @@
-function Origin({data}){
+import {memo} from 'react';
+
+const Origin = memo(({data}) =>{
 
 	return (
 		<div id="OriginDiv" title="Spawning point for nodes">
@@ -21,6 +23,6 @@ function Origin({data}){
 		</div>
 		</div>
 	)
-}
+});
 
-export default Origin;
+export default Origin

@@ -1,4 +1,4 @@
-import {useCallback, memo} from 'react';
+import {memo} from 'react';
 import {Position, Handle, NodeResizer} from '@xyflow/react';
 import '@xyflow/react/dist/style.css';
 

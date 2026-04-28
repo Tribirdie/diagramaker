@@ -65,7 +65,7 @@ class ImportButton{
 		this.timesClickedImport = timesClickedImport;
 	}
 
-	checkForCancel = () =>{
+	checkForCancel = (language) =>{
 		this.timesClickedImport = 1;
 		document.getElementsByClassName("dropdown-content")[0].children[0].textContent = language.loadDiagram;
 	}
@@ -73,7 +73,7 @@ class ImportButton{
 	FileDialog = ({setNodes, nodes,  setEdges, edges, language}) => {
 		const file = document.getElementById("file-dialog")
 
-		file.addEventListener("cancel", this.checkForCancel);
+		file.addEventListener("cancel", () => {this.checkForCancel(language)});
 
 		const read = new FileReader()
 	
@@ -92,7 +92,7 @@ class ImportButton{
 			read.onload = null; // release previous result
 			this.timesClickedImport = 2;
 			file.click();
-			document.getElementsByClassName("dropdown-content")[0].children[0].textContent = "Load Diagram";
+			document.getElementsByClassName("dropdown-content")[0].children[0].textContent = language.loadDiagram;
 		}
 
 		const ImportedNodes = file.files[0];
@@ -114,15 +114,10 @@ class ExportButton{
 		this.node = node;
 	}
 
-	ExportImage = () =>{
-		const getApp = document.querySelector('.react-flow__viewport');
-		const nodesBounds = this.hook.getNodesBounds(this.node);
-		const app = document.getElementById("app");
-		const viewport = getViewportForBounds(nodesBounds, document.imageWidth, document.imageHeight, 0.5, 2);
-
+	makeImage = (getApp, h, w) =>{
 		toPng(getApp, {
-			width: document.imageWidth,
-			height: document.imageHeight,
+			width: w,
+			height: h
 		}
 
 		).then( (url) => {
@@ -133,6 +128,16 @@ class ExportButton{
 			dwn.click()
 			document.body.removeChild(dwn);
 		})
+
+	}
+
+	ExportImage = () =>{
+		worker.postMessage(this.makeImage.toString());
+		const getApp = document.querySelector('.react-flow__viewport');
+		const nodesBounds = this.hook.getNodesBounds(this.node);
+		const viewport = getViewportForBounds(nodesBounds, document.imageWidth, document.imageHeight, 0.5, 2);
+
+		this.makeImage(getApp, document.imageHeight, document.imageWidth);
 	}
 
 	ExportJson = () =>{

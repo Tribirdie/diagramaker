@@ -1,5 +1,5 @@
 import {toPng} from 'html-to-image'
-import {React, useCallback, useRef} from 'react'
+import {React, useCallback, useRef, useMemo, memo} from 'react'
 import {reconnectEdge, addEdge, useEdgesState,
 	Position, ReactFlow, MarkerType, ReactFlowProvider, useReactFlow, useViewport,
 	applyNodeChanges, useNodesState, 
@@ -37,25 +37,27 @@ let handlesCheck = [ ["bottom", "bottom", "top"], ["top", "bottom", "top"]
 	, ["right", "right", "left"] , ["left", "right", "left"]];
 let times_clicked = 0;
 
-function Inner({setNodes, nodes, onNodesChange, setEdges, edges, onEdgesChange}){
+const Inner = memo(({setNodes, nodes, onNodesChange, setEdges, edges, onEdgesChange}) =>{
 	const edgeReconnect = useRef(true);
 	const reactFlow = useReactFlow();
 
 	const DropButton = new DropdownButton();
-	const ImportButt = new ImportButton(DropButton, true, 1);
-	const ExportButt = new ExportButton(DropButton, reactFlow, node);
+	const ImportButt = useMemo(() => (new ImportButton(DropButton, true, 1)));
+	const ExportButt = useMemo(() => (new ExportButton(DropButton, reactFlow, node)));
 
-	const Recipe = new Recipes(); 
-	const Baker = new Oven(Recipe);
-	const connectionBuilder = new ConnectionBuilder();
-	connectionBuilder.setProps({setEdges});
-	connectionBuilder.setEdgeDropped(false);
-	connectionBuilder.setEdgeReconnect(edgeReconnect);
-	connectionBuilder.setHandlesCheck(handlesCheck);
-	connectionBuilder.setRecipe(Recipe);
-	connectionBuilder.setSource("right");
-	connectionBuilder.setTarget("left");
-	const connectionHandler = connectionBuilder.build();
+	const Recipe = useMemo(() => (new Recipes()), []); 
+	const Baker = useMemo(() => {new Oven(Recipe)}, []);
+	const connectionBuild = useMemo( () => (new ConnectionBuilder()), []);
+		
+	connectionBuild.setProps({setEdges});
+	connectionBuild.setEdgeDropped(false);
+	connectionBuild.setEdgeReconnect(edgeReconnect);
+	connectionBuild.setHandlesCheck(handlesCheck);
+	connectionBuild.setRecipe(Recipe);
+	connectionBuild.setSource("right");
+	connectionBuild.setTarget("left");
+
+	const connectionHandler = useMemo( () => (connectionBuild.build()));
 
 	const getPos = (e) => {
 		if (!connectionHandler.edgeDropped){
@@ -136,7 +138,8 @@ function Inner({setNodes, nodes, onNodesChange, setEdges, edges, onEdgesChange})
 
  	)
 
-}
+})
+
 export default function App() {
 	const edgeReconnect = useRef(true)
 	const [nodes, setNodes, onNodesChange] = useNodesState(node);

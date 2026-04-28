@@ -19,41 +19,42 @@ class Connection{
 		}
 	}
 	
-	onConnectStart = useCallback((_, {handleId}) =>{
+	onConnectStart = (_, {handleId}) =>{
 		for (let i = 0; i < this.handlesCheck.length; i++){
 			this.connectHandles(handleId, this.handlesCheck[i][0], this.handlesCheck[i][1], this.handlesCheck[i][2]);
 		}
-	});
+	};
 
-	onConnect = useCallback((connection) =>{
+	onConnect = (connection) =>{
 		const CreatedEdge = this.Recipe.createEdge(Math.random(), connection.target, connection.source, this.target, this.source)
 		this.props.setEdges((eds) => addEdge(CreatedEdge, eds));
 		this.edgeDropped = true;
-	});
+	};
 
 		
-	onConnectEnd = useCallback(() =>{
+	onConnectEnd = () =>{
 		this.edgeDropped = true;
 
-	}, []);
+	};
 
-        onReconnectStart = useCallback(() =>{
+        onReconnectStart = () =>{
 		this.edgeDropped = true;
 		this.edgeReconnect.current = false;
-	}, []);
+	};
 	
-	onReconnect = useCallback((oldEdge, newConnection) =>{
+	onReconnect = (oldEdge, newConnection) =>{
 		this.edgeDropped = true;
 		this.edgeReconnect.current = true;
 		this.props.setEdges((eds) => reconnectEdge(oldEdge,newConnection,eds));
-	})
+	};
 	
-	onReconnectEnd = useCallback((_, edge) =>{
+	onReconnectEnd = (_, edge) =>{
 		if (!this.edgeReconnect.current){
 			this.props.setEdges((eds) => eds.filter((e) => e.id !== edge.id))
 			this.edgeDropped = true;
 		}
-	});
+	};
+
 }
 
 class ConnectionBuilder{

@@ -1,5 +1,3 @@
-import {addEdge} from '@xyflow/react';
-
 class Recipes{
 	createNode(ids, pos, labels, types, isDraggable){
 		const newNode = {

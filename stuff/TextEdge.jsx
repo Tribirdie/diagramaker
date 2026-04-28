@@ -17,10 +17,8 @@ const TextEdge = ({
     sourceX,
     sourceY,
     sourcePosition, 
-    sourcePosition,
     targetX,
     targetY,
-    targetPosition,
     targetPosition,
   });
 
