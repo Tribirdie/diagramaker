@@ -133,7 +133,7 @@
 
 #input{
 	width: 90%;
-    height: 80%;
+    height: 50%;
     min-width: 100px;
 	border-radius: 20px;
     text-align: top-left;
@@ -377,7 +377,7 @@
 	background-color: #0f1620;
 }
 
-#DropdownSelect{
+.DropdownSelect{
 	margin-top: 5px;
 	border-radius: 20px;
 	padding-right: 100px;
@@ -387,9 +387,10 @@
 	height: 40px;
 }
 
-#DropdownSelect option{
+.DropdownSelect option{
 	color: rgba(255, 255, 255, 0.2)
 }
+
 
 #DimensionInput{
 	border-radius: 20px;
