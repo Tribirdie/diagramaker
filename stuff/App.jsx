@@ -31,7 +31,6 @@ const node = [
 ];
 
 const edge = [];
-
 const language = LanguageObj(LanguageWords, window.localStorage.getItem("lang"));
 
 const Inner = memo(({setNodes, nodes, onNodesChange, setEdges, edges, onEdgesChange}) =>{
@@ -122,6 +121,7 @@ const Inner = memo(({setNodes, nodes, onNodesChange, setEdges, edges, onEdgesCha
 		onReconnectStart={connectionHandler.onReconnectStart}
 		onReconnectEnd={connectionHandler.onReconnectEnd}
 		onNodeDoubleClick={onNodeDoubleClick}
+		onlyRenderVisibleElements={true}
 		>
 
 
