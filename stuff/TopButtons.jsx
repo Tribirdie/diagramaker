@@ -132,7 +132,6 @@ class ExportButton{
 	}
 
 	ExportImage = () =>{
-		worker.postMessage(this.makeImage.toString());
 		const getApp = document.querySelector('.react-flow__viewport');
 		const nodesBounds = this.hook.getNodesBounds(this.node);
 		const viewport = getViewportForBounds(nodesBounds, document.imageWidth, document.imageHeight, 0.5, 2);
