@@ -13,32 +13,43 @@ const setLanguage = (event) =>{
 	location.reload();
 }
 
+const setExtension = (event) =>{
+	document.extension = event.target.value;
+}
+
 const saveDimension = (element, dimension) =>{
 	element.addEventListener("keydown", (e) =>{
-		if (e.key == "Enter"){
-			if (dimension == "w"){
-				document.imageWidth = element.value;
-				console.log(document.imageWidth)
+		if (e.key === "Enter"){
+			if (dimension !== "w"){
+				document.imageHeight = element.value;
+				return;
 			}
 			
-			else{
-				document.imageHeight = element.value;
-				console.log(document.imageHeight)
-			}
+			document.imageWidth = element.value;
 		}
 	});
 
 }
 const HideConfig = (elements, divnumber) =>{
 
-	const dropdown = document.getElementById("DropdownSelect");
-	dropdown.removeEventListener("change", setLanguage);
-	dropdown.addEventListener("change", setLanguage);
+	const dropdown = document.querySelectorAll(".DropdownSelect");
+	for (let drop = 0; drop < dropdown.length; drop++){
+		console.log(drop)
+		if (drop !== 0){
+			dropdown[drop].removeEventListener("change", setLanguage);
+			dropdown[drop].addEventListener("change", setLanguage);
+		}
+
+		else{
+			dropdown[drop].removeEventListener("change", setExtension);
+			dropdown[drop].addEventListener("change", setExtension);
+		}
+	}
 
 	const buttons = document.querySelectorAll(".sideButtonsBar button")
 
 	for (let butt = 0; butt < buttons.length; butt++){
-		if (butt != divnumber){
+		if (butt !== divnumber){
 			buttons[butt].style.borderLeft = "0px solid";
 			buttons[butt].style.borderColor = "#1D54B7"
 			continue;
@@ -51,7 +62,7 @@ const HideConfig = (elements, divnumber) =>{
 
 	for (let div = 0; div < elements.length; div++){
 		for (let i = 0; i < elements[div].length; i++){
-			if (div == divnumber){
+			if (div === divnumber){
 				document.getElementById(elements[div][i]).style.display = "initial";
 			}
 
@@ -130,6 +141,15 @@ function MainContent({language}){
 
 		</div>
 
+		<div style={{display: "flex", flexDirection: "rows", marginLeft: "10px"}}>
+		<p style={{color: "rgba(255, 255, 255, 0.8)"}}>{language.extension}:</p>
+		<select className="DropdownSelect">
+		<option value="">{language.select}</option>
+		<option value="PNG">PNG</option>
+		<option value="JPEG">JPEG</option>
+		</select>
+		</div>
+
 		</div>
 
 		</div>
@@ -142,7 +162,7 @@ function MainContent({language}){
 
 		<div style={{display: "flex", flexDirection: "rows", marginLeft: "20px"}}>
 		<p style={{color: "rgba(255, 255, 255, 0.8)"}}>{language.language}:</p>
-		<select id="DropdownSelect">
+		<select className="DropdownSelect">
 		<option value="">{language.select}</option>
 		<option value="3">Français</option>
 		<option value="2">Italiano</option>
@@ -204,7 +224,7 @@ function TopPanel({ImportButt, ExportButt, language, setNodes, nodes, setEdges, 
 			const dimensionInputs = document.querySelectorAll(".ImageDimensionsOptions input");
 
 			for (let dimension = 0; dimension < dimensionInputs.length; dimension++){
-				if (dimension == 0){
+				if (dimension === 0){
 					saveDimension(dimensionInputs[dimension], "w")
 				}
 
