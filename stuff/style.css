@@ -141,12 +141,12 @@
 }
 
 #input2{
-	width: 20%;
-    height: 60%;
-    min-width: 100px;
+	width: 50%;
+      	height: 50%;
+    	min-width: 50%;
 	border-radius: 20px;
-    text-align: top-left;
-    resize: none;
+     	text-align: top-left;
+      	resize: none;
 }
 
 #textarea{
