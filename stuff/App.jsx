@@ -1,5 +1,5 @@
 import {toPng} from 'html-to-image'
-import {React, useCallback, useRef, useMemo, memo} from 'react'
+import {React, useCallback, useEffect, useRef, useMemo, memo} from 'react'
 import {reconnectEdge, addEdge, useEdgesState,
 	Position, ReactFlow, MarkerType, ReactFlowProvider, useReactFlow, useViewport,
 	applyNodeChanges, useNodesState, 
@@ -16,32 +16,40 @@ import {ConnectionBuilder} from './EventHandlers'
 import {Settings, Main} from './Layout'
 import {LanguageObj, LanguageWords} from './Languages'
 
-window.addEventListener("load", () =>{
-	const dropdowns = document.getElementsByClassName("dropdown-content");
-	dropdowns[0].children[0].style.borderRadius = "0px 0px 10px 10px";
-	dropdowns[1].children[1].style.borderRadius = "0px 0px 10px 10px";
-});
-
 const nodeTypes = {circleNode: CircleNode, origin: Origin, RectNode: RectangularNode}
 const edgeTypes = {textEdge: TextEdge}
 
-const node = [];
+const node = [
+	{
+		id: "og",
+		position: {x:0, y:0},
+		data: {label:""},
+		type: "origin",
+		// only false for origin cursor. it should only move on click on pane, includes connecting edges.
+		draggable: false
+	}
+];
+
 const edge = [];
 
 const language = LanguageObj(LanguageWords, window.localStorage.getItem("lang"));
 
-let clicked = 0;
-let origin_exists = false;
-let pos = {x:50, y:50}
-let handlesCheck = [ ["bottom", "bottom", "top"], ["top", "bottom", "top"]
-	, ["right", "right", "left"] , ["left", "right", "left"]];
-let times_clicked = 0;
-
 const Inner = memo(({setNodes, nodes, onNodesChange, setEdges, edges, onEdgesChange}) =>{
+	const addBorderRadius = useEffect(() =>{
+		const dropdowns = document.getElementsByClassName("dropdown-content");
+		dropdowns[0].children[0].style.borderRadius = "0px 0px 10px 10px";
+		dropdowns[1].children[1].style.borderRadius = "0px 0px 10px 10px";
+
+	});
+	
+	const handlesCheck = useRef([ ["bottom", "bottom", "top"], ["top", "bottom", "top"]
+	, ["right", "right", "left"] , ["left", "right", "left"] ]);
+	let pos = useRef({x:50, y:50});
+
 	const edgeReconnect = useRef(true);
 	const reactFlow = useReactFlow();
 
-	const DropButton = new DropdownButton();
+	const DropButton = useMemo(() => (new DropdownButton()));
 	const ImportButt = useMemo(() => (new ImportButton(DropButton, true, 1)));
 	const ExportButt = useMemo(() => (new ExportButton(DropButton, reactFlow, node)));
 
@@ -52,7 +60,7 @@ const Inner = memo(({setNodes, nodes, onNodesChange, setEdges, edges, onEdgesCha
 	connectionBuild.setProps({setEdges});
 	connectionBuild.setEdgeDropped(false);
 	connectionBuild.setEdgeReconnect(edgeReconnect);
-	connectionBuild.setHandlesCheck(handlesCheck);
+	connectionBuild.setHandlesCheck(handlesCheck.current);
 	connectionBuild.setRecipe(Recipe);
 	connectionBuild.setSource("right");
 	connectionBuild.setTarget("left");
@@ -62,22 +70,14 @@ const Inner = memo(({setNodes, nodes, onNodesChange, setEdges, edges, onEdgesCha
 	const getPos = (e) => {
 		if (!connectionHandler.edgeDropped){
 			const screenPos = {x:e.clientX, y:e.clientY};
-			pos = reactFlow.screenToFlowPosition(screenPos)
-		
+			pos.current = reactFlow.screenToFlowPosition(screenPos)
 
-		        if (!origin_exists){
-				const props = ["og", pos, "", "origin", false]
-				const node = Recipe.createNode(props[0], props[1], props[2], props[3], props[4]);
-				setNodes((nds) => nds.concat(node));
-				origin_exists = true;
-			}
-			
 			setNodes((nds) => nds.map((node) =>{
-				if (!(node.id == "og") ){
+				if (node.id !== "og"){
 					return node
 				}
 
-			        return Recipe.createNode("og", pos, "", "origin", false)
+			        return Recipe.createNode("og", pos.current, "", "origin", false)
 			}))
 		}
 
@@ -85,19 +85,19 @@ const Inner = memo(({setNodes, nodes, onNodesChange, setEdges, edges, onEdgesCha
 	}
 
 	const MakeSquare = useCallback(() => {
-		const node = Recipe.createNode(Math.random(), pos, "", "RectNode", true);
+		const node = Recipe.createNode(Math.random(), pos.current, "", "RectNode", true);
 		setNodes((nds) => nds.concat(node));
 
-	}, []);
+	}, [setNodes]);
 
 	const MakeCircle = useCallback(() => {
-		const node = Recipe.createNode(Math.random(), pos, "", "circleNode", true);
+		const node = Recipe.createNode(Math.random(), pos.current, "", "circleNode", true);
 		setNodes((nds) => nds.concat(node));
-	}, [])
+	}, [setNodes])
 
 	const onNodeDoubleClick = useCallback((_, node) =>{
 		setNodes((nds) => nds.filter((n) => n.id != node.id)) 
-	});
+	}, [setNodes]);
 
 	return 	(
 
