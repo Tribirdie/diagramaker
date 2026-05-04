@@ -32,7 +32,7 @@ const node = [
 const edge = [];
 const language = LanguageObj(LanguageWords, window.localStorage.getItem("lang"));
 
-const Inner = memo(({setNodes, nodes, onNodesChange, setEdges, edges, onEdgesChange}) =>{
+const Inner = memo(({setNodes, nodes, onNodesChange, setEdges, edges, onEdgesChange, actionBuffer}) =>{
 	const handlesCheck = useRef([ ["bottom", "bottom", "top"], ["top", "bottom", "top"]
 	, ["right", "right", "left"] , ["left", "right", "left"] ]);
 	let pos = useRef({x:50, y:50});
@@ -106,7 +106,6 @@ const Inner = memo(({setNodes, nodes, onNodesChange, setEdges, edges, onEdgesCha
 	}, [setNodes]);
 	
 	return 	(
-
 		<div style={{ height: '100%', width: '100%' }}>
 		
 		<Settings language={language}>
@@ -121,16 +120,15 @@ const Inner = memo(({setNodes, nodes, onNodesChange, setEdges, edges, onEdgesCha
 		nodeTypes={nodeTypes}
 		edgeTypes={edgeTypes}
 		onPaneClick={getPos}
-		onConnectStart={connectionHandler.onConnectStart}
-		onConnect={connectionHandler.onConnect}
-		onConnectEnd={connectionHandler.onConnectEnd}
-		onReconnect={connectionHandler.onReconnect}
-		onReconnectStart={connectionHandler.onReconnectStart}
-		onReconnectEnd={connectionHandler.onReconnectEnd}
-		onNodeDoubleClick={onNodeDoubleClick}
+		onConnectStart={useCallback(connectionHandler.onConnectStart, [])}
+		onConnect={useCallback(connectionHandler.onConnect, [])}
+		onConnectEnd={useCallback(connectionHandler.onConnectEnd, [])}
+		onReconnect={useCallback(connectionHandler.onReconnect, [])}
+		onReconnectStart={useCallback(connectionHandler.onReconnectStart, [])}
+		onReconnectEnd={useCallback(connectionHandler.onReconnectEnd, [])}
+		onNodeDoubleClick={useCallback(onNodeDoubleClick, [])}
 		onlyRenderVisibleElements={true}
 		>
-
 
 		<Main ImportButt={ImportButt} ExportButt={ExportButt} DropButton={DropButton}
 		 nodes={nodes} setEdges={setEdges} setNodes={setNodes} edges={edges}
@@ -141,10 +139,7 @@ const Inner = memo(({setNodes, nodes, onNodesChange, setEdges, edges, onEdgesCha
 
 		</ReactFlow>
 		</div>
-
-
  	)
-
 })
 
 export default function App() {
@@ -155,9 +150,34 @@ export default function App() {
 
 	}, []);
 
+	const actionBuffer = useRef([])
 	const edgeReconnect = useRef(true)
 	const [nodes, setNodes, onNodesChange] = useNodesState(node);
 	const [edges, setEdges, onEdgesChange] = useEdgesState(edge)
+
+	const removeLatestNode = (n,i,a) =>{
+		if (n !== a[a.length-1 || n.id  == "og"]){
+			return n
+		}
+
+		else{
+			actionBuffer.current.push(n);
+		}
+	}
+
+	const Shortcuts = useEffect(() =>{
+		document.addEventListener("keydown", (event) =>{
+			if (event.altKey && event.key == "z"){
+				setNodes((nds) => nds.filter(removeLatestNode));
+			}
+
+			// redo shortcut
+			if (event.altKey && event.key == "x" && actionBuffer.current.length != 0){
+				setNodes((nds) => nds.concat(actionBuffer.current.pop()))
+			}
+		})
+
+	}, [setNodes, setEdges]);
 
   return (
     <div style={{ height: '100%', width: '100%' }}>
@@ -167,7 +187,8 @@ export default function App() {
 	  onEdgesChange={onEdgesChange} 
 	  setNodes={setNodes} 
 	  nodes={nodes} 
-	  onNodesChange={onNodesChange}/>
+	  onNodesChange={onNodesChange}
+	  actionBuffer={actionBuffer}/>
 	  </ReactFlowProvider>
     </div>
   );

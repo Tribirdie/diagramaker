@@ -86,14 +86,11 @@ function ExitSection({}){
 	)
 }
 
-function SearchBar({}) {
+function SearchBar({language}) {
 	return (
-		<div style={{display: "flex", backgroundColor: "#1C283E", borderRadius: "50px", height: "8vh"}}>
-		<button style={{border: "none", backgroundColor: "transparent"}}>
-		<img src={glass} width="45px" height="45px"></img>
-		</button>
-
-		<input id="settingsinput"></input>
+		<div style={{display: "flex", backgroundColor: "#1C283E", justifyContent: "center",
+				borderRadius: "50px", height: "8vh"}}>
+		<p style={{color: "rgba(255,255,255,0.8)"}}>{language.settings}</p>
 		</div>
 	)
 
@@ -183,7 +180,7 @@ function Settings({language}){
 
 		<header id="settings">
 		<ExitSection></ExitSection>
-		<SearchBar></SearchBar>
+		<SearchBar language={language}></SearchBar>
 
 		<hr style={{color: "#355B87",height:"1px", backgroundColor: "rgba(255,255,255,0.08)", marginBottom: "0", marginTop: "0"}}></hr>
 
