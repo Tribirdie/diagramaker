@@ -4,7 +4,10 @@ import {applyNodeChanges, useNodesState,
 	ConnectionMode} from '@xyflow/react';
 import {memo} from 'react'
 import exit from './assets/exitButton.png'
-import glass from './assets/magnifyingGlass.png'
+import palette from './assets/palette.png'
+import square from './assets/square.png'
+import circle from './assets/circle.png'
+import output from './assets/output.png'
 
 const elementsToHide = [["configPNG"], ["configStyle"]];
 
@@ -46,7 +49,7 @@ const HideConfig = (elements, divnumber) =>{
 		}
 	}
 
-	const buttons = document.querySelectorAll(".sideButtonsBar button")
+	const buttons = document.querySelectorAll(".sideButtonsBar div")
 
 	for (let butt = 0; butt < buttons.length; butt++){
 		if (butt !== divnumber){
@@ -91,6 +94,7 @@ function SearchBar({language}) {
 		<div style={{display: "flex", backgroundColor: "#1C283E", justifyContent: "center",
 				borderRadius: "50px", height: "8vh"}}>
 		<p style={{color: "rgba(255,255,255,0.8)"}}>{language.settings}</p>
+
 		</div>
 	)
 
@@ -100,8 +104,17 @@ function SideBar({language}){
 	return (
 		<div id="settingsContent" style={{height: "70vh", width: "25%", backgroundColor: "#162030", display: "flex"}}>
 		<div className="sideButtonsBar">
+
+		<div>
 		<button onClick={() => {HideConfig(elementsToHide, 0)}}>{language.output}</button>
+		<img src={output} width="20px" height="20px"></img>
+		</div>
+
+		<div>
 		<button onClick={() => {HideConfig(elementsToHide, 1)}}>{language.appearance}</button>
+		<img src={palette} width="20px" height="20px"></img>
+		</div>
+
 		</div>
 
 		</div>
@@ -240,11 +253,11 @@ function PanelBottom({MakeSquare, MakeCircle, DropButton, language}){
 		<>
 		<div id="nodes-list">
                 <div id="rows">
-                  <button id="bottom-bar-butts" onClick={MakeSquare}>
-		{language.square}
+                  <button id="bottom-bar-butts" onClick={MakeSquare} title="Draws a square">
+		  <img src={square} width="30px" height="30px"></img>
                   </button>
-                  <button id="bottom-bar-butts" onClick={MakeCircle} title="Draws a circle at the origin">
-		{language.circle}
+                  <button id="bottom-bar-butts" onClick={MakeCircle} title="Draws a circle">
+		  <img src={circle} width="30px" height="30px"></img>
                   </button>
                 </div>
 
