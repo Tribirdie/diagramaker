@@ -1,4 +1,4 @@
-import {React, useCallback, useEffect, useRef, useMemo, memo} from 'react'
+import {React, useCallback, useEffect, useRef, useState, useMemo, memo} from 'react'
 import {reconnectEdge, addEdge, useEdgesState,
 	Position, ReactFlow, MarkerType, ReactFlowProvider, useReactFlow, useViewport,
 	applyNodeChanges, useNodesState, 
@@ -8,15 +8,16 @@ import '@xyflow/react/dist/style.css';
 import CircleNode from './CircleNode'
 import Origin from './Origin'
 import RectangularNode from './RectangularNode'
-import TextEdge from './TextEdge'
+import {TextEdge, RegEdge} from './TextEdge'
+import Text from './TextNode.jsx'
 import {DropdownButton, ImportButton, ExportButton} from './TopButtons'
 import {Recipes, Oven} from './Nodes'
 import {ConnectionBuilder} from './EventHandlers'
 import {Settings, Main} from './Layout'
 import {LanguageObj, LanguageWords} from './Languages'
 
-const nodeTypes = {circleNode: CircleNode, origin: Origin, RectNode: RectangularNode}
-const edgeTypes = {textEdge: TextEdge}
+const nodeTypes = {circleNode: CircleNode, origin: Origin, RectNode: RectangularNode, text: Text}
+const edgeTypes = {textEdge: TextEdge, reg: RegEdge};
 
 const node = [
 	{
@@ -34,10 +35,11 @@ const language = LanguageObj(LanguageWords, window.localStorage.getItem("lang"))
 
 const Inner = memo(({setNodes, nodes, onNodesChange, setEdges, edges, onEdgesChange, actionBuffer}) =>{
 	const handlesCheck = useRef([ ["bottom", "bottom", "top"], ["top", "bottom", "top"]
-	, ["right", "right", "left"] , ["left", "right", "left"] ]);
+	, ["right", "right", "left"] , ["left", "right", "left"]]);
 	let pos = useRef({x:50, y:50});
 
 	const edgeReconnect = useRef(true);
+	const edgeType = useRef("reg");
 	const reactFlow = useReactFlow();
 
 	const getAllPropertyNames = () => {
@@ -70,6 +72,7 @@ const Inner = memo(({setNodes, nodes, onNodesChange, setEdges, edges, onEdgesCha
 	connectionBuild.setRecipe(Recipe);
 	connectionBuild.setSource("right");
 	connectionBuild.setTarget("left");
+	connectionBuild.setEdgeType(edgeType.current);
 
 	const connectionHandler = useMemo( () => (connectionBuild.build()));
 
@@ -99,12 +102,55 @@ const Inner = memo(({setNodes, nodes, onNodesChange, setEdges, edges, onEdgesCha
 	const MakeCircle = useCallback(() => {
 		const node = Recipe.createNode(Math.random(), pos.current, "", "circleNode", true);
 		setNodes((nds) => nds.concat(node));
-	}, [setNodes])
-
-	const onNodeDoubleClick = useCallback((_, node) =>{
-		setNodes((nds) => nds.filter((n) => n.id != node.id)) 
 	}, [setNodes]);
+
+	const TextNode = useCallback(() => {
+		const node = Recipe.createNode(Math.random(), pos.current, "", "text", true);
+		console.log(node)
+		setNodes((nds) => nds.concat(node));
+	}, [setNodes]);
+
+	const ConnectorEdge = () =>{
+		edgeType.current = "textEdge";
+		connectionHandler.edgeType =  edgeType.current;
+
+		const e = document.getElementById("nodes-list").children;
+
+		const p = e[2].children;
+		
+		for (let j = 0; j < p.length; j++){
+			if (j != 0){
+				p[j].style.backgroundColor = "#6a4d31"
+				continue;
+			}
+
+			p[j].style.backgroundColor = "#204B6B";
+		}
 	
+	}
+
+	const RegularEdge = () =>{
+		edgeType.current = "reg";
+		connectionHandler.edgeType = edgeType.current;
+		const e = document.getElementById("nodes-list").children;
+		console.log("hi")
+		const p = e[2].children;
+		
+		for (let j = 0; j < p.length; j++){
+			if (j != 1){
+				p[j].style.backgroundColor = "#6a4d31"
+				continue;
+			}
+
+			p[j].style.backgroundColor = "#204B6B";
+		}
+
+	}
+
+	const onNodeDoubleClick = (_, node) =>{
+		setNodes((nds) => nds.filter((n) => n.id != node.id)) 
+	}
+
 	return 	(
 		<div style={{ height: '100%', width: '100%' }}>
 		
@@ -130,8 +176,9 @@ const Inner = memo(({setNodes, nodes, onNodesChange, setEdges, edges, onEdgesCha
 		onlyRenderVisibleElements={true}
 		>
 
-		<Main ImportButt={ImportButt} ExportButt={ExportButt} DropButton={DropButton}
-		 nodes={nodes} setEdges={setEdges} setNodes={setNodes} edges={edges}
+		<Main ImportButt={ImportButt} RegularEdge={RegularEdge} ConnectorEdge={ConnectorEdge} 
+		ExportButt={ExportButt} DropButton={DropButton}
+		 nodes={nodes} setEdges={setEdges} TextNode={TextNode} setNodes={setNodes} edges={edges}
 		MakeSquare={MakeSquare}
 		MakeCircle={MakeCircle}
 		language={language}>

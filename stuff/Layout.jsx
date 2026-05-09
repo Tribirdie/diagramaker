@@ -8,6 +8,9 @@ import palette from './assets/palette.png'
 import square from './assets/square.png'
 import circle from './assets/circle.png'
 import output from './assets/output.png'
+import text from './assets/text.png'
+import regularEdge from './assets/regularEdge.png'
+import textEdge from './assets/textEdge.png'
 
 const elementsToHide = [["configPNG"], ["configStyle"]];
 
@@ -248,17 +251,38 @@ function TopPanel({ImportButt, ExportButt, language, setNodes, nodes, setEdges, 
 	)
 }
 
-function PanelBottom({MakeSquare, MakeCircle, DropButton, language}){
+function PanelBottom({ConnectorEdge, RegularEdge, TextNode, MakeSquare, MakeCircle, DropButton, language}){
 	return (
 		<>
 		<div id="nodes-list">
-                <div id="rows">
-                  <button id="bottom-bar-butts" onClick={MakeSquare} title="Draws a square">
+                <div className="rows">
+                  <button onClick={MakeSquare} title="Draws a square">
 		  <img src={square} width="30px" height="30px"></img>
                   </button>
-                  <button id="bottom-bar-butts" onClick={MakeCircle} title="Draws a circle">
+
+                  <button onClick={MakeCircle} title="Draws a circle">
 		  <img src={circle} width="30px" height="30px"></img>
                   </button>
+		  
+		  <button onClick={TextNode} title="Draws a text node">
+		  <img src={text} width="30px" height="30px"></img>
+		  </button>
+                </div>
+
+		<div>
+		<hr></hr>
+		<p style={{color: "rgba(255, 255, 255, 0.8)", display: "flex", justifyContent: "center"}}>Edges</p>
+		<hr></hr>
+		</div>
+
+                <div className="rows">
+                  <button onClick={RegularEdge} title="Draws a square">
+		  <img src={regularEdge} width="30px" height="30px"></img>
+                  </button>
+
+		  <button onClick={ConnectorEdge} title="Changes edge type to connector">
+		  <img src={textEdge} width="30px" height="30px"></img>
+		  </button>
                 </div>
 
 		</div>
@@ -271,7 +295,8 @@ function PanelBottom({MakeSquare, MakeCircle, DropButton, language}){
 
 }
 
-const Main = memo(({ImportButt, ExportButt, DropButton, MakeSquare, MakeCircle, language, nodes, setEdges, setNodes, edges}) =>{
+const Main = memo(({ImportButt, ExportButt, DropButton, MakeSquare, MakeCircle, RegularEdge, ConnectorEdge,
+	TextNode, language, nodes, setEdges, setNodes, edges}) =>{
 	return (
 		<>
 		<Panel position="top-left">
@@ -282,7 +307,8 @@ const Main = memo(({ImportButt, ExportButt, DropButton, MakeSquare, MakeCircle, 
 
 		<Panel position="bottom-left">
 
-		<PanelBottom MakeSquare={MakeSquare} MakeCircle={MakeCircle} DropButton={DropButton} language={language}>
+		<PanelBottom RegularEdge={RegularEdge} ConnectorEdge={ConnectorEdge} MakeSquare={MakeSquare} TextNode={TextNode}
+		MakeCircle={MakeCircle} DropButton={DropButton} language={language}>
 		</PanelBottom>
 
 		</Panel>

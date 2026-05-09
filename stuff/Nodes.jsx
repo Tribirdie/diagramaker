@@ -13,14 +13,14 @@ class Recipes{
 
 	}
 
-	createEdge(ids, targets, sources, tHandle, sHandle){
+	createEdge(ids, targets, sources, tHandle, sHandle, types){
 		const newEdge = {
 			id: ids.toString(),
 			source: sources,
 			target: targets,
 			targetHandle: tHandle,
 			sourceHandle: sHandle,
-			type: 'textEdge'
+			type: types
 		}
 	
 		return newEdge

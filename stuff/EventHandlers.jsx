@@ -2,14 +2,16 @@ import {useCallback} from 'react'
 import {addEdge, reconnectEdge} from '@xyflow/react'
 
 class Connection{
-	constructor(props={}, edgeDropped=false, edgeReconnect=true, handlesCheck=[], Recipe=null, source='left', target='right'){
+	constructor(props={}, edgeDropped=false, edgeReconnect=true, handlesCheck=[], Recipe=null, source='left', target='right',
+	edgeType){
 		this.props = props;
 		this.edgeDropped = edgeDropped;
 		this.edgeReconnect = edgeReconnect;
 		this.handlesCheck = handlesCheck;
 		this.Recipe = Recipe;
 		this.source = source;
-		this.target = target
+		this.target = target;
+		this.edgeType = edgeType;
 	}
 	
 	connectHandles = (handleId, cmp,src, tar) =>{
@@ -26,7 +28,8 @@ class Connection{
 	};
 
 	onConnect = (connection) =>{
-		const CreatedEdge = this.Recipe.createEdge(Math.random(), connection.target, connection.source, this.target, this.source)
+		const CreatedEdge = this.Recipe.createEdge(Math.random(), connection.target,
+			connection.source, this.target, this.source, this.edgeType)
 		this.props.setEdges((eds) => addEdge(CreatedEdge, eds));
 		this.edgeDropped = true;
 	};
@@ -88,6 +91,10 @@ class ConnectionBuilder{
 
 	setTarget = (Target) =>{
 		this.Connection.target = Target;
+	}
+
+	setEdgeType = (edge) =>{
+		this.Connection.target = edge;
 	}
 
 	build = () =>{

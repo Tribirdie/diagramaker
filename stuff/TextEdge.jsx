@@ -45,4 +45,47 @@ const TextEdge = ({
   );
 };
 
-export default TextEdge;
+const RegEdge = ({
+  id,
+  sourceX,
+  sourceY,
+  targetX,
+  targetY,
+  sourcePosition,
+  targetPosition,
+  style = {},
+  markerEnd,
+}) => {
+  // Create a Bezier path
+  const [edgePath, labelX, labelY] = getBezierPath({
+    sourceX,
+    sourceY,
+    sourcePosition, 
+    targetX,
+    targetY,
+    targetPosition,
+  });
+
+  return (
+      <>
+      <BaseEdge id={id} path={edgePath} markerEnd={markerEnd} />
+      <EdgeLabelRenderer>
+        <div
+          style={{
+            position: 'absolute',
+            borderRadius: 5,
+            fontWeight: 700,
+	    pointerEvents: 'all',
+          }} 
+	  
+	  className="nodrag nopan"
+
+        >
+        </div>
+      </EdgeLabelRenderer>
+    </>
+  );
+};
+
+
+export {TextEdge, RegEdge};
