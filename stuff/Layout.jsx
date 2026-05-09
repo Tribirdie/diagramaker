@@ -40,16 +40,14 @@ const HideConfig = (elements, divnumber) =>{
 
 	const dropdown = document.querySelectorAll(".DropdownSelect");
 	for (let drop = 0; drop < dropdown.length; drop++){
-		console.log(drop)
 		if (drop !== 0){
 			dropdown[drop].removeEventListener("change", setLanguage);
 			dropdown[drop].addEventListener("change", setLanguage);
+			continue
 		}
-
-		else{
-			dropdown[drop].removeEventListener("change", setExtension);
-			dropdown[drop].addEventListener("change", setExtension);
-		}
+		
+		dropdown[drop].removeEventListener("change", setExtension);
+		dropdown[drop].addEventListener("change", setExtension);
 	}
 
 	const buttons = document.querySelectorAll(".sideButtonsBar div")
@@ -68,14 +66,12 @@ const HideConfig = (elements, divnumber) =>{
 
 	for (let div = 0; div < elements.length; div++){
 		for (let i = 0; i < elements[div].length; i++){
-			if (div === divnumber){
-				document.getElementById(elements[div][i]).style.display = "initial";
-			}
-
-			else{
-
+			if (div !== divnumber){
 				document.getElementById(elements[div][i]).style.display = "none";
+				continue;
 			}
+			
+			document.getElementById(elements[div][i]).style.display = "initial";
 		}
 
 	}
@@ -237,13 +233,12 @@ function TopPanel({ImportButt, ExportButt, language, setNodes, nodes, setEdges, 
 			const dimensionInputs = document.querySelectorAll(".ImageDimensionsOptions input");
 
 			for (let dimension = 0; dimension < dimensionInputs.length; dimension++){
-				if (dimension === 0){
-					saveDimension(dimensionInputs[dimension], "w")
+				if (dimension !== 0){
+					saveDimension(dimensionInputs[dimension], "h");
+					continue;
 				}
 
-				else{
-					saveDimension(dimensionInputs[dimension], "h");
-				}
+				saveDimension(dimensionInputs[dimension], "w");
 			}
 		}}>{language.settings}</button>
 
