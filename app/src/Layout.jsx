@@ -3,14 +3,14 @@ import {applyNodeChanges, useNodesState,
 	Panel, Position, Background, BackgroundVariant,
 	ConnectionMode} from '@xyflow/react';
 import {memo} from 'react'
-import exit from './assets/exitButton.png'
-import palette from './assets/palette.png'
-import square from './assets/square.png'
-import circle from './assets/circle.png'
-import output from './assets/output.png'
-import text from './assets/text.png'
-import regularEdge from './assets/regularEdge.png'
-import textEdge from './assets/textEdge.png'
+import exit from '../assets/exitButton.png'
+import palette from '../assets/palette.png'
+import square from '../assets/square.png'
+import circle from '../assets/circle.png'
+import output from '../assets/output.png'
+import text from '../assets/text.png'
+import regularEdge from '../assets/regularEdge.png'
+import textEdge from '../assets/textEdge.png'
 
 const elementsToHide = [["configPNG"], ["configStyle"]];
 

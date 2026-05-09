@@ -5,15 +5,15 @@ import {reconnectEdge, addEdge, useEdgesState,
 	Panel, Background, BackgroundVariant,
 	ConnectionMode} from '@xyflow/react';
 import '@xyflow/react/dist/style.css';
-import {RectangularNode, CircleNode, Origin, Text,TextEdge, RegEdge} from './Components'
-import {DropdownButton, ImportButton, ExportButton} from './TopButtons'
-import {Recipes, Oven} from './NodeEdgeOven'
-import {ConnectionBuilder} from './EventHandlers'
-import {Settings, Main} from './Layout'
-import {LanguageObj, LanguageWords} from './Languages'
-import {RegularEdge, ConnectorEdge, MakeSquare, MakeCircle, TextNode} from './NodesNEdges.jsx'
-import {getAllPropertyNames}  from './Utils.jsx'
-import {Shortcuts, addBorderRadius} from './Effects.jsx'
+import {RectangularNode, CircleNode, Origin, Text,TextEdge, RegEdge} from './src/Components'
+import {DropdownButton, ImportButton, ExportButton} from './src/TopButtons'
+import {Recipes, Oven} from './src/NodeEdgeOven'
+import {ConnectionBuilder} from './src/EventHandlers'
+import {Settings, Main} from './src/Layout'
+import {LanguageObj, LanguageWords} from './src/Languages'
+import {RegularEdge, ConnectorEdge, MakeSquare, MakeCircle, TextNode} from './src/NodesNEdges.jsx'
+import {getAllPropertyNames}  from './src/Utils.jsx'
+import {Shortcuts, addBorderRadius} from './src/Effects.jsx'
 
 const nodeTypes = {circleNode: CircleNode, origin: Origin, RectNode: RectangularNode, text: Text}
 const edgeTypes = {textEdge: TextEdge, reg: RegEdge};
