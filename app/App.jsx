@@ -40,6 +40,7 @@ const Inner = memo(({setNodes, nodes, onNodesChange, setEdges, edges, onEdgesCha
 	const edgeReconnect = useRef(true);
 	const edgeType = useRef("reg");
 	const reactFlow = useReactFlow();
+	const timesClicked = useRef([0,0])
 
 	const result = useMemo(() => getAllPropertyNames());
 
@@ -119,7 +120,9 @@ const Inner = memo(({setNodes, nodes, onNodesChange, setEdges, edges, onEdgesCha
 		edges={edges}
 		MakeSquare={useCallback(() => MakeSquare({setNodes}, Recipe, pos, node))}
 		MakeCircle={useCallback(() => MakeCircle({setNodes}, Recipe, pos, node))}
-		language={language}>
+		language={language}
+		timesClicked={timesClicked}
+		>
 		</Main>
 
 		</ReactFlow>

@@ -40,8 +40,19 @@
 	display: none;
 }
 
-.rows{
+.nodesEdgeDrop{
 
+}
+
+.nodesEdgeDrop button{
+	background-color: #304b6b;
+	width: 100%;
+	color: rgba(255, 255, 255, 0.8);
+	border: none;
+}
+
+.rows{
+	display: none;
 }
 
 .rows button{

@@ -2,7 +2,7 @@ import { defineConfig } from 'vite'
 
 export default defineConfig({
   base: '/diagramaker/',
-  root: 'stuff',
+  root: 'app',
   build: {
     outDir: '../dist',
   }

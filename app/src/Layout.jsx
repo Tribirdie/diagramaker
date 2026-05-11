@@ -77,6 +77,20 @@ const HideConfig = (elements, divnumber) =>{
 	}
 }
 
+const showFlows = (elm, times_clicked) =>{
+	const pop = document.getElementsByClassName("rows")[elm];
+
+	if (times_clicked[elm] === 1){
+		pop.style.display = "none";
+		times_clicked[elm] = 0;
+	}
+	
+	else{
+		pop.style.display = "initial";
+		times_clicked[elm] = 1;
+	}
+}
+
 function ExitSection({}){
 	return (
 		<div id="exitdiv">
@@ -246,10 +260,13 @@ function TopPanel({ImportButt, ExportButt, language, setNodes, nodes, setEdges, 
 	)
 }
 
-function PanelBottom({ConnectorEdge, RegularEdge, TextNode, MakeSquare, MakeCircle, DropButton, language}){
+function PanelBottom({ConnectorEdge, RegularEdge, TextNode, MakeSquare, MakeCircle, DropButton, language, timesClicked}){
 	return (
 		<>
 		<div id="nodes-list">
+
+		<div className="nodesEdgeDrop">
+		<button onClick={() => showFlows(0, timesClicked.current)}>Nodes</button>
                 <div className="rows">
                   <button onClick={MakeSquare} title="Draws a square">
 		  <img src={square} width="30px" height="30px"></img>
@@ -264,12 +281,10 @@ function PanelBottom({ConnectorEdge, RegularEdge, TextNode, MakeSquare, MakeCirc
 		  </button>
                 </div>
 
-		<div>
-		<hr></hr>
-		<p style={{color: "rgba(255, 255, 255, 0.8)", display: "flex", justifyContent: "center"}}>Edges</p>
-		<hr></hr>
 		</div>
 
+		<div className="nodesEdgeDrop">
+		<button style={{width: "100%"}} onClick={() => showFlows(1, timesClicked.current)}>Edges</button>
                 <div className="rows">
                   <button onClick={RegularEdge} title="Draws a square">
 		  <img src={regularEdge} width="30px" height="30px"></img>
@@ -279,6 +294,7 @@ function PanelBottom({ConnectorEdge, RegularEdge, TextNode, MakeSquare, MakeCirc
 		  <img src={textEdge} width="30px" height="30px"></img>
 		  </button>
                 </div>
+		</div>
 
 		</div>
 
@@ -291,7 +307,7 @@ function PanelBottom({ConnectorEdge, RegularEdge, TextNode, MakeSquare, MakeCirc
 }
 
 const Main = memo(({ImportButt, ExportButt, DropButton, MakeSquare, MakeCircle, RegularEdge, ConnectorEdge,
-	TextNode, language, nodes, setEdges, setNodes, edges}) =>{
+	TextNode, language, nodes, setEdges, setNodes, edges, timesClicked}) =>{
 	return (
 		<>
 		<Panel position="top-left">
@@ -303,7 +319,7 @@ const Main = memo(({ImportButt, ExportButt, DropButton, MakeSquare, MakeCircle, 
 		<Panel position="bottom-left">
 
 		<PanelBottom RegularEdge={RegularEdge} ConnectorEdge={ConnectorEdge} MakeSquare={MakeSquare} TextNode={TextNode}
-		MakeCircle={MakeCircle} DropButton={DropButton} language={language}>
+		MakeCircle={MakeCircle} DropButton={DropButton} language={language} timesClicked={timesClicked}>
 		</PanelBottom>
 
 		</Panel>
