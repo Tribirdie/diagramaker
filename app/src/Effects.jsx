@@ -17,7 +17,7 @@ const Shortcuts = ({setNodes, setEdges}, removeLatestNode, actionBuffer) =>{
 const addBorderRadius = () =>{
 	const dropdowns = document.getElementsByClassName("dropdown-content");
 	dropdowns[0].children[0].style.borderRadius = "0px 0px 10px 10px";
-	dropdowns[1].children[1].style.borderRadius = "0px 0px 10px 10px";
+	dropdowns[1].children[0].style.borderRadius = "0px 0px 10px 10px";
 
 };
 

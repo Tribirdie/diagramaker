@@ -238,7 +238,7 @@ function TopPanel({ImportButt, ExportButt, language, setNodes, nodes, setEdges, 
 		<button id="button" onClick={() =>{ImportButt.clickFunc.showDropdown(1)}}>{language.export}</button>
 		<div className="dropdown-content">
 		<button onClick={ExportButt.ExportJson}>{language.exportJson}</button>
-		<button onClick={ExportButt.ExportImage}>{language.exportImg}</button>
+
 		</div>
 		</div>
 

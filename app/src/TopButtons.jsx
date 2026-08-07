@@ -18,7 +18,7 @@ class DropdownButton{
 			}
 
 			else{
-				element.style.height = "20vh";
+				element.style.height = "10vh";
 				element.querySelectorAll("button")[0].style.height = "10vh";
 				element.querySelectorAll("button")[1].style.height = "10vh";
 			}
