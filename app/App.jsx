@@ -132,7 +132,12 @@ const Inner = memo(({setNodes, nodes, onNodesChange, setEdges, edges, onEdgesCha
 
 export default function App() {
 	useEffect(() => addBorderRadius());
-
+	useEffect(() => {
+		if (window.screen.width < 1024 && window.screen.height < 768) {
+			alert("Landscape mode is recommended for best experience.");
+			console.log("2")
+		}
+	});
 	const actionBuffer = useRef([])
 	const edgeReconnect = useRef(true)
 	const [nodes, setNodes, onNodesChange] = useNodesState(node);

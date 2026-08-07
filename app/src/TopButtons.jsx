@@ -73,41 +73,34 @@ class ImportButton{
 
 	FileDialog = ({setNodes, nodes,  setEdges, edges}) => {
 		const file = document.getElementById("file-dialog")
+		file.click();
+		file.onchange = () =>{
+			const read = new FileReader()
+			read.onload = (e) => {
+				const str_to_obj = JSON.parse(e.target.result)
+				setNodes([]);
+				setEdges([]);
+				setNodes((nds) => nds.concat(str_to_obj.nodes));
+				setEdges((eds) => eds.concat(str_to_obj.edges));
+				this.timesClickedImport = 1
+				document.getElementsByClassName("dropdown-content")[0].children[0].textContent = this.lang.importJson; 
+			};
+		
+				
+			const ImportedNodes = file.files[0];
+				
+			try{
+				const readText = read.readAsText(ImportedNodes);
+			}
+				
+			catch (e){
+					console.log("No file selected.")
+			}
 
-		file.removeEventListener("cancel", this.checkForCancel);
-		file.addEventListener("cancel", this.checkForCancel);
-
-		const read = new FileReader()
-	
-		read.onload = (e) => {
-			const str_to_obj = JSON.parse(e.target.result)
-			setNodes([]);
-			setEdges([]);
-			setNodes((nds) => nds.concat(str_to_obj.nodes));
-			setEdges((eds) => eds.concat(str_to_obj.edges));
-			this.timesClickedImport = 1
-			document.getElementsByClassName("dropdown-content")[0].children[0].textContent = this.lang.importJson; 
-		};
-
-		// don't open file dialog if clicked for second time. that's when the nodes load.
-		if (this.timesClickedImport !== 2){
-			read.onload = null; // release previous result
-			this.timesClickedImport = 2;
-			file.click();
-			document.getElementsByClassName("dropdown-content")[0].children[0].textContent = this.lang.loadDiagram;
-		}
-
-		const ImportedNodes = file.files[0];
-		try{
-			const readText = read.readAsText(ImportedNodes);
-		}
-
-		catch (e){
-			console.log("No file selected.")
 		}
 	}
-
 }
+
 
 class ExportButton{
 	constructor(clickFunc, hook, node, props){
